@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ghorza & Loly - تواصل معنا</title>
+    <style>
+        :root { 
+            --navy: #0d1b2a; 
+            --black: #1a1a1a;
+            --bg: #f7f3eb; 
+            --cashmere: #ce897b;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--black);
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+
+        /* الحاوية الأساسية المسؤولة عن الحركة الناعمة */
+        .page-wrapper {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s var(--transition-smooth), transform 0.3s var(--transition-smooth);
+        }
+        .page-wrapper.page-ready {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* الهيدر الموحد المطابق للرئيسية */
+        header { 
+            background: var(--navy); 
+            padding: 10px 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+        
+        .right-header-side {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* زرار الهامبرغر التفاعلي المتطور */
+        .menu-btn {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 8px 5px;
+            z-index: 2100;
+            transition: transform 0.3s var(--transition-smooth);
+        }
+        .menu-btn span {
+            display: block;
+            width: 22px;
+            height: 3px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            transition: all 0.3s var(--transition-smooth);
+        }
+        
+        .menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-btn.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
+        .menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .menu-btn:hover { 
+            transform: scale(1.20);
+        } 
+        .menu:active {
+            transform: scale(0.10);
+        }
+
+        .brand { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            text-decoration: none; 
+        }
+        
+        .logo-img { 
+            width: 52px; 
+            height: 52px; 
+            border-radius: 50%; 
+            border: 2px solid #ffffff; 
+            object-fit: cover; 
+            transition: transform 0.6s var(--transition-smooth);
+        }
+        .logo-img.rotate { transform: rotate(360deg); }
+        
+        .brand-name { 
+            color: #ffffff; 
+            font-size: 21px; 
+            font-weight: bold; 
+        }
+        
+        /* زرار السلة المطور بإطار وتوهج ظل أبيض صريح */
+        .cart-link { 
+            text-decoration: none; 
+            border: 2px solid #ffffff; 
+            width: 72px;
+            height: 36px;
+            border-radius: 20px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 14px #ffffff; 
+            padding: 0 8px;
+            transition: all 0.3s var(--transition-smooth);
+        }
+        .cart-link:active {
+            transform: scale(0.92);
+            box-shadow: 0 0 20px #ffffff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .cart-count { color: #ffffff; font-weight: bold; font-size: 15px; }
+        .cart-icon { font-size: 16px; filter: brightness(0) invert(1); }
+        .cart-link:hover {
+            transform: scale(1.1); 
+            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));      
+        }
+
+        /* القائمة الجانبية الموحدة (50vw) والـ Overlay */
+        .side-menu {
+            height: 100vh;
+            width: 0; 
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            right: 0; 
+            background-color: var(--navy);
+            overflow-x: hidden;
+            overflow-y: auto;
+            transition: width 0.4s var(--transition-smooth); 
+            padding-top: 80px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+        }
+        .side-menu a, .dropdown-btn {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 17px;
+            color: #eeeeee;
+            display: block;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: right;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.25s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .side-menu a:active, .dropdown-container-content a:active {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--cashmere);
+        }
+        
+        /* تلوين الصفحة الحالية في المنيو */
+        .side-menu a.active-page {
+            color: var(--cashmere) !important;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .dropdown-btn { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .arrow-icon { 
+            font-size: 12px; 
+            color: #ffffff; 
+            transition: transform 0.3s var(--transition-smooth), color 0.3s ease; 
+        }
+        
+        .dropdown-btn.active { 
+            color: var(--cashmere) !important; 
+            background: rgba(255, 255, 255, 0.02); 
+        }
+        .dropdown-btn.active .arrow-icon { 
+            transform: rotate(180deg); 
+            color: var(--cashmere); 
+        }
+
+        .dropdown-container-content { 
+            max-height: 0;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.2); 
+            transition: max-height 0.35s var(--transition-smooth);
+        }
+        .dropdown-container-content a { font-size: 15px; padding: 12px 35px; color: #ccc; border-bottom: none; }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--transition-smooth);
+        }
+        .menu-overlay.show { opacity: 1; pointer-events: auto; }
+
+        /* ستايل كارت محتوى صفحة التواصل المظبوط */
+        .contact-container { 
+            max-width: 500px; 
+            margin: 30px auto; 
+            padding: 0 15px; 
+            width: 100%;
+        }
+
+        .contact-card {
+            background: #ffffff;
+            border-radius: 25px;
+            padding: 30px 20px;
+            box-shadow: 0 8px 24px rgba(13, 27, 42, 0.15);
+            border: 1.5px solid var(--navy);
+            text-align: center;
+        }
+
+        .problem-text {
+            font-size: 15px;
+            color: var(--navy);
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* بوكس عرض الأرقام الكلاسيكي الراقي */
+        .numbers-box {
+            background: rgba(13, 27, 42, 0.02);
+            border: 1px dashed var(--cashmere);
+            border-radius: 18px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+        }
+        
+        .info-row {
+            display: flex;
+            flex-direction: column; /* جعل العناصر تتراص رأسياً تحت بعضها */
+            align-items: flex-start;
+            padding: 12px 0;
+            font-size: 15px;
+            font-weight: bold;
+            gap: 8px; /* مسافة ناعمة بين العنوان والأرقام */
+        }
+        
+        .info-row:not(:last-child) {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .info-label { color: #555; display: flex; align-items: center; gap: 8px; }
+        
+        /* تنسيق روابط الأرقام التفاعلية */
+        .info-val { 
+            color: var(--navy); 
+            font-size: 16px; 
+            letter-spacing: 0.5px; 
+            text-decoration: none; 
+            display: inline-block; 
+            padding: 4px 10px;
+            background: rgba(13, 27, 42, 0.05);
+            border-radius: 8px;
+            width: 100%; /* تملأ المساحة المتاحة لتسهيل الضغط بالموبايل */
+            text-align: right;
+            transition: all 0.2s ease;
+        }
+        .info-val:active {
+            background: var(--cashmere);
+            color: #fff;
+            transform: scale(0.98);
+        }
+
+        /* الفاصل البصري */
+        .section-divider {
+            font-size: 13px;
+            color: #777;
+            font-weight: bold;
+            margin: 25px 0 20px 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .section-divider::before, .section-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+
+        /* أزرار السوشيال ميديا الحركية المخصصة */
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 12px;
+            transition: all 0.3s var(--transition-smooth);
+            box-shadow: 0 4px 12px rgb(0, 0, 0);
+        }
+        .social-btn:hover {
+            transform: scale(1.05); 
+            filter: drop-shadow(0 0 12px rgb(0, 0, 0));      
+        }
+
+        .social-btn:active { transform: scale(0.96); opacity: 0.9; }
+
+        .btn-Whatsapp { background: #2ecc71;}
+        .btn-facebook { background: #1877f2; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        .arrow-left { font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper" id="pageWrapper">
+
+        <header>
+            <div class="right-header-side">
+                <div class="menu-btn" id="menuBtn" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <a href="javascript:void(0)" onclick="triggerPageExit('index.html')" class="brand">
+                    <img src="https://i.ibb.co/Y7zCmbss/1779978006473.png" alt="Ghorza & Loly Logo" class="logo-img" id="logoImg">
+                    <span class="brand-name">تواصل معنا 📞</span>
+                </a>
+            </div>
+            <a href="javascript:void(0)" onclick="triggerPageExit('cart.html')" class="cart-link">
+                <span class="cart-count">0</span>
+                <span class="cart-icon">🛒</span>
+            </a>
+        </header>
+
+        <div id="menuOverlay" class="menu-overlay" onclick="toggleNav()"></div>
+
+        <div id="sideMenu" class="side-menu">
+            <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
+            
+            <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
+            
+            <div class="dropdown-wrapper">
+                <button class="dropdown-btn" id="dropBtn" onclick="toggleDropdown()">
+                    <span>المنتجات</span>
+                    <span class="arrow-icon" id="arrowIcon">▼</span>
+                </button>
+                <div class="dropdown-container-content" id="categoriesDropdown">
+                    <a href="javascript:void(0)" onclick="goToCategory('حظاظات')">حظاظات</a>
+                    <a href="javascript:void(0)" onclick="goToCategory('سلاسل')">سلاسل</a>
+                    <a href="javascript:void(0)" onclick="goToCategory('كوسترات')">كوسترات</a>
+                    <a href="javascript:void(0)" onclick="goToCategory('بوسترات')">بوسترات</a>
+                    <a href="javascript:void(0)" onclick="goToCategory('ميداليات')">ميداليات</a>
+                </div>
+            </div>
+            <a href="javascript:void(0)" class="active-page">للتواصل معنا</a>
+        </div>
+
+        <div class="contact-container">
+            <div class="contact-card">
+                
+                <p class="problem-text">لو فيه أي مشكلة أو حابين تستفسروا عن تفاصيل معينة، تواصلوا معنا فوراً:</p>
+
+                <div class="numbers-box">
+                    <div class="info-row">
+                        <span class="info-label">📞 اضغط للاتصال الهاتفي:</span>
+                        <a href="tel:01212638078" class="info-val">📱 01212638078</a>
+                        <a href="tel:01061576259" class="info-val">📱 01061576259</a>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">💬 اضغط لفتح محادثة واتساب:</span>
+                        <a href="https://wa.me/201212638078" target="_blank" class="info-val">💚 01212638078</a>
+                        <a href="https://wa.me/201061576259" target="_blank" class="info-val">💚 01061576259</a>
+                    </div>
+                </div>
+
+                <div class="section-divider">تابعونا على صفحاتنا الأخرى</div>
+
+                <a href="https://whatsapp.com/channel/0029VbCG0Dy8vd1V8gDl3p3j" target="_blank" class="social-btn btn-Whatsapp">
+                    <span>🟢 الواتساب - Whatsapp</span>
+                    <span class="arrow-left">◀</span>
+                </a>
+                <a href="https://www.facebook.com/share/1L8uUQZMR2/" target="_blank" class="social-btn btn-facebook">
+                    <span>🔵 فيسبوك - Facebook</span>
+                    <span class="arrow-left">◀</span>
+                </a>
+
+                <a href=" https://instagram.com/ghorza.loly" target="_blank" class="social-btn btn-instagram">
+                    <span>📸 انستجرام - Instagram</span>
+                    <span class="arrow-left">◀</span>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function goToCategory(categoryName) {
+            triggerPageExit(`products.html?type=${encodeURIComponent(categoryName)}`);
+        }
+
+        function toggleNav() {
+            var sidebar = document.getElementById("sideMenu");
+            var btn = document.getElementById("menuBtn");
+            var logo = document.getElementById("logoImg");
+            var overlay = document.getElementById("menuOverlay");
+
+            btn.classList.toggle("open");
+            if(logo) logo.classList.toggle("rotate");
+            overlay.classList.toggle("show");
+
+            if (sidebar.style.width === "50vw") {
+                sidebar.style.width = "0";
+            } else {
+                sidebar.style.width = "50vw"; 
+            }
+        }
+
+        function toggleDropdown() {
+            var btn = document.getElementById("dropBtn");
+            var dropdown = document.getElementById("categoriesDropdown");
+            
+            btn.classList.toggle("active");
+            if (dropdown.style.maxHeight) {
+                dropdown.style.maxHeight = null;
+            } else {
+                dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+            }
+        }
+
+        function triggerPageExit(url) {
+            var sidebar = document.getElementById("sideMenu");
+            var btn = document.getElementById("menuBtn");
+            var overlay = document.getElementById("menuOverlay");
+            
+            if (sidebar && sidebar.style.width === "50vw") {
+                sidebar.style.width = "0";
+                if(btn) btn.classList.remove("open");
+                if(overlay) overlay.classList.remove("show");
+            }
+            
+            var wrapper = document.getElementById("pageWrapper");
+            if(wrapper) {
+                wrapper.style.opacity = "0";
+                wrapper.style.transform = "translateY(-12px)";
+            }
+            
+            setTimeout(function() {
+                window.location.href = url;
+            }, 250);
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            var wrapper = document.getElementById("pageWrapper");
+            if (wrapper) {
+                wrapper.style.opacity = "";
+                wrapper.style.transform = "";
+                setTimeout(() => {
+                    wrapper.classList.add("page-ready");
+                }, 10);
+            }
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartCountElement = document.querySelector(".cart-count");
+            if(cartCountElement) cartCountElement.innerText = cart.length;
+        });
+    </script>
+</body>
+</html>

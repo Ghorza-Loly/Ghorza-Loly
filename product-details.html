@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ghorza & Loly - تفاصيل المنتج</title>
+    <style>
+        :root { 
+            --navy: #0d1b2a; --black: #1a1a1a; --bg: #f7f3eb; --cashmere: #ce897b;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--black); padding-bottom: 100px; overflow-x: hidden; }
+
+        header { background: var(--navy); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; height: 70px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .right-header-side { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px 5px; z-index: 2100; transition: transform 0.3s var(--transition-smooth); }
+        .menu-btn span { display: block; width: 22px; height: 3px; background-color: #ffffff; border-radius: 2px; transition: all 0.3s var(--transition-smooth); }
+        .menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-btn.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
+        .menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .logo-img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; transition: transform 0.6s var(--transition-smooth); }
+        .logo-img.rotate { transform: rotate(360deg); }
+        .page-header-title { color: #ffffff; font-size: 19px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap; }
+        
+        .cart-link { text-decoration: none; border: 2px solid #ffffff; width: 72px; height: 36px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); box-shadow: 0 0 14px #ffffff; transition: all 0.3s var(--transition-smooth); cursor: pointer; }
+        .cart-count { color: #ffffff; font-weight: bold; font-size: 15px; }
+        .cart-icon { font-size: 16px; filter: brightness(0) invert(1); }
+
+        .side-menu { height: 100vh; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--navy); overflow-x: hidden; overflow-y: auto; transition: width 0.4s var(--transition-smooth); padding-top: 80px; box-shadow: -5px 0 15px rgba(0,0,0,0.3); }
+        .side-menu a, .dropdown-btn { padding: 15px 20px; text-decoration: none; font-size: 17px; color: #eeeeee; display: block; text-align: right; border: none; background: none; width: 100%; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .dropdown-btn { display: flex; justify-content: space-between; align-items: center; }
+        .arrow { font-size: 12px; color: #ffffff; transition: transform 0.3s var(--transition-smooth); display: inline-block; }
+        .dropdown-btn.active { color: var(--cashmere) !important; background: rgba(255, 255, 255, 0.02); }
+        .dropdown-btn.active .arrow { transform: rotate(180deg); }
+        .dropdown-container { max-height: 0; overflow: hidden; background: rgba(0, 0, 0, 0.2); transition: max-height 0.35s var(--transition-smooth); }
+        .dropdown-container a { padding: 12px 35px; font-size: 15px; color: #ccc; }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.4); z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.4s var(--transition-smooth); }
+        .menu-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .slider-container { 
+            width: calc(100% - 30px); 
+            max-width: 520px; 
+            margin: 20px auto 0 auto; 
+            position: relative; 
+            overflow: hidden; 
+            background: transparent; 
+            aspect-ratio: 1 / 1; 
+            border-radius: 24px; 
+            border: 2px solid var(--navy); 
+            box-shadow: 0 10px 25px rgba(13, 27, 42, 0.22); 
+        }
+        .slider { display: flex; transition: transform 0.5s var(--transition-smooth); height: 100%; width: 100%; }
+        
+        .slider img { width: 100%; height: 100%; flex-shrink: 0; object-fit: cover; }
+        
+        .arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(13, 27, 42, 0.6); color: white; border: none; width: 40px; height: 40px; cursor: pointer; border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .prev { right: 15px; } .next { left: 15px; }
+
+        .content { max-width: 520px; margin: 25px auto; padding: 0 15px; text-align: right; }
+        .title { font-size: 24px; color: var(--navy); margin-bottom: 12px; font-weight: bold; }
+        .full-desc { font-size: 15px; color: #555; line-height: 1.7; margin-bottom: 25px; background: #fff; padding: 15px; border-radius: 16px; border-right: 4px solid var(--cashmere); }
+
+        .color-trigger { width: 100%; padding: 15px; background: #fff; border: 1.5px solid var(--navy); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; color: var(--navy); margin-bottom: 25px; }
+        .color-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .color-modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .color-modal { position: fixed; bottom: 0; right: 0; width: 100%; background: var(--bg); padding: 20px; border-top-left-radius: 25px; border-top-right-radius: 25px; transform: translateY(100%); transition: 0.4s var(--transition-smooth); z-index: 2001; }
+        .color-modal.show { transform: translateY(0); }
+        .color-option { padding: 18px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; font-weight: bold; cursor: pointer; }
+
+        .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--navy); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .price-val { font-size: 22px; font-weight: 900; color: var(--cashmere); }
+        
+        /* التنسيق الأساسي لزرار الإضافة ولحالة التعطيل الرمادية */
+        .add-btn { background: var(--cashmere); color: white; border: none; padding: 12px 25px; border-radius: 14px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease; }
+        .add-btn.disabled { background: #888888; cursor: not-allowed; }
+
+        #toast { position: fixed; bottom: 85px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: white; padding: 8px 18px; border-radius: 30px; display: none; z-index: 2000; border: 1.5px solid var(--cashmere); font-size: 13px; font-weight: bold; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="right-header-side">
+            <div class="menu-btn" id="menuBtn" onclick="toggleNav()"><span></span><span></span><span></span></div>
+            <a href="javascript:void(0)" onclick="triggerPageExit('index.html')" style="display: flex; align-items: center;">
+                <img src="https://i.ibb.co/Y7zCmbss/1779978006473.png" class="logo-img" id="logoImg" alt="G&L Logo">
+            </a>
+        </div>
+        <div class="page-header-title" id="pageHeaderTitle">تفاصيل المنتج</div>
+        
+        <a href="javascript:void(0)" onclick="triggerPageExit('cart.html')" class="cart-link">
+            <span class="cart-count" id="headerCartCount">0</span>
+            <span class="cart-icon">🛒</span>
+        </a>
+    </header>
+
+    <div id="menuOverlay" class="menu-overlay" onclick="toggleNav()"></div>
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
+        <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
+        
+        <button class="dropdown-btn" id="dropBtn" onclick="toggleDropdown()"><span>المنتجات</span><span class="arrow" id="dropArrow">▼</span></button>
+        <div class="dropdown-container" id="dropContainer">
+            <a href="javascript:void(0)" onclick="goToCategory('حظاظات')">حظاظات</a>
+            <a href="javascript:void(0)" onclick="goToCategory('سلاسل')">سلاسل</a>
+            <a href="javascript:void(0)" onclick="goToCategory('كوسترات')">كوسترات</a>
+            <a href="javascript:void(0)" onclick="goToCategory('بوسترات')">بوسترات</a>
+            <a href="javascript:void(0)" onclick="goToCategory('ميداليات')">ميداليات</a>
+        </div>
+        
+        <a href="javascript:void(0)" onclick="triggerPageExit('offers.html')">وفر أكتر</a>
+        <a href="javascript:void(0)" onclick="triggerPageExit('contact.html')">للتواصل معنا</a>
+    </div>
+
+    <div class="slider-container">
+        <div class="slider" id="mainSlider"></div>
+        <button class="arrow-btn prev" id="prevBtn" onclick="moveSlider(1)">&#10095;</button>
+        <button class="arrow-btn next" id="nextBtn" onclick="moveSlider(-1)">&#10094;</button>
+    </div>
+
+    <div class="content">
+        <h1 class="title" id="pTitle">جاري التحميل...</h1>
+        <p class="full-desc" id="pDesc"></p>
+        
+        <div class="color-trigger" id="colorTrigger" onclick="toggleModal()">
+            <span id="selectedColorText">اختر اللون المفضل</span>
+            <span>▼</span>
+        </div>
+    </div>
+
+    <div class="color-modal-overlay" id="colorOverlay" onclick="toggleModal()"></div>
+    <div class="color-modal" id="colorModal">
+        <div id="colorOptionsList"></div>
+    </div>
+
+    <div class="action-bar">
+        <div class="price-info"><span style="font-size:11px; color:#ccc;">السعر المعتمد:</span><span id="pPrice" class="price-val">0 ج.م</span></div>
+        <button class="add-btn" id="addToCartBtn" onclick="addToCart()">إضافة للسلة 🛒</button>
+    </div>
+
+    <div id="toast">تمت الإضافة للسلة بنجاح ✅</div>
+
+    <script>
+        function toggleNav() {
+            var s = document.getElementById("sideMenu"), b = document.getElementById("menuBtn"), l = document.getElementById("logoImg"), o = document.getElementById("menuOverlay");
+            b.classList.toggle("open"); l.classList.toggle("rotate"); o.classList.toggle("show");
+            s.style.width = (s.style.width === "50vw") ? "0" : "50vw";
+        }
+        
+        function toggleDropdown() {
+            var b = document.getElementById("dropBtn"), c = document.getElementById("dropContainer");
+            b.classList.toggle("active"); c.style.maxHeight = c.style.maxHeight ? null : c.scrollHeight + "px";
+        }
+
+        function goToCategory(categoryName) {
+            triggerPageExit(`products.html?type=${encodeURIComponent(categoryName)}`);
+        }
+
+        function triggerPageExit(url) {
+            document.body.style.transition = "opacity 0.25s var(--transition-smooth), transform 0.25s var(--transition-smooth)";
+            document.body.style.opacity = "0";
+            document.body.style.transform = "translateY(-8px)";
+            setTimeout(function() {
+                window.location.href = url;
+            }, 250);
+        }
+
+        function toggleModal() {
+            document.getElementById('colorModal').classList.toggle('show');
+            document.getElementById('colorOverlay').classList.toggle('show');
+        }
+
+        const getQueryParam = (p) => new URLSearchParams(window.location.search).get(p);
+        const colorsParam = getQueryParam('colors');
+
+        // عند تحميل الصفحة: لو المنتج فيه ألوان نجعل الزرار رمادياً ومعطلاً بشكل تلقائي ومبدئي
+        if (colorsParam) {
+            const cartBtn = document.getElementById('addToCartBtn');
+            if(cartBtn) cartBtn.classList.add('disabled');
+
+            const list = document.getElementById('colorOptionsList');
+            list.innerHTML = ""; 
+            colorsParam.split(',').forEach((c, index) => {
+                const div = document.createElement('div');
+                div.className = 'color-option';
+                div.innerHTML = `${c.trim()} <input type="radio" name="color" id="radio_color_${index}">`;
+                div.onclick = () => {
+                    document.getElementById(`radio_color_${index}`).checked = true;
+                    document.getElementById('selectedColorText').innerText = c.trim();
+                    
+                    // بمجرد اختيار اللون يرجع الزرار لنشاطه ولونه القديم تلقائياً
+                    if(cartBtn) cartBtn.classList.remove('disabled');
+                    
+                    toggleModal();
+                };
+                list.appendChild(div);
+            });
+        } else {
+            document.getElementById('colorTrigger').style.display = 'none';
+        }
+
+        const name = getQueryParam('name');
+        const price = getQueryParam('price');
+        const fullDesc = getQueryParam('fullDesc');
+        const type = getQueryParam('type'); 
+
+        if (name) document.getElementById('pTitle').innerText = name;
+        if (price) document.getElementById('pPrice').innerText = price + " ج.م";
+        
+        if (fullDesc && fullDesc.trim() !== "" && fullDesc !== "null" && fullDesc !== "undefined") {
+            document.getElementById('pDesc').innerText = fullDesc;
+            document.getElementById('pDesc').style.display = "block";
+        } else {
+            document.getElementById('pDesc').style.display = "none";
+        }
+
+        if (type) document.getElementById('pageHeaderTitle').innerText = type; 
+
+        const sliderContainer = document.getElementById('mainSlider');
+        const urlParams = new URLSearchParams(window.location.search);
+        let imagesArray = [];
+
+        for (let [key, value] of urlParams.entries()) {
+            if (key.startsWith('img') && value && value !== 'null' && value !== 'undefined') {
+                imagesArray.push(value);
+            }
+        }
+
+        let sliderContent = "";
+        imagesArray.forEach(imgUrl => {
+            sliderContent += `<img src="${imgUrl}" alt="${name || 'صورة المنتج'}">`;
+        });
+        
+        if (sliderContent) {
+            sliderContainer.innerHTML = sliderContent;
+        }
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (imagesArray.length <= 1) {
+            if(prevBtn) prevBtn.style.display = "none";
+            if(nextBtn) nextBtn.style.display = "none";
+        } else {
+            if(prevBtn) prevBtn.style.display = "flex";
+            if(nextBtn) nextBtn.style.display = "flex";
+        }
+
+        let slideIndex = 0;
+        function moveSlider(n) {
+            const slides = sliderContainer.getElementsByTagName('img');
+            if (slides.length <= 1) return; 
+            
+            slideIndex += n;
+            if (slideIndex >= slides.length) { slideIndex = 0; }
+            if (slideIndex < 0) { slideIndex = slides.length - 1; }
+            
+            sliderContainer.style.transform = `translateX(${slideIndex * 100}%)`;
+        }
+
+        // دالة إظهار التنبيه التحتاني الصغير (Toast) بأي نص نحدده برمجياً
+        function showToast(message) {
+            const t = document.getElementById("toast");
+            t.innerText = message;
+            t.style.display = "block";
+            setTimeout(() => t.style.display = "none", 2500);
+        }
+
+        function addToCart() {
+            const cartBtn = document.getElementById('addToCartBtn');
+            const color = document.getElementById('selectedColorText').innerText;
+
+            // إذا كان المنتج له ألوان والزرار لا يزال يحمل كلاس 'disabled'
+            if (colorsParam && cartBtn.classList.contains('disabled')) {
+                showToast("من فضلك اختر اللون أولاً 🎨");
+                return; // إيقاف العملية تماماً
+            }
+
+            // إرسال البيانات الفريش بدقة للسلة بالـ localStorage
+            const firstImg = sliderContainer.getElementsByTagName('img')[0]?.src || '';
+            const product = { 
+                name: name, 
+                price: price + " ج.م", 
+                image: firstImg, 
+                details: colorsParam ? color : null 
+            };
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            document.getElementById("headerCartCount").innerText = cart.length;
+            
+            showToast("تمت الإضافة للسلة بنجاح ✅");
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            document.body.style.opacity = "";
+            document.body.style.transform = "";
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            var cartCountEl = document.getElementById("headerCartCount");
+            if(cartCountEl) cartCountEl.innerText = cart.length;
+        });
+    </script>
+</body>
+</html>

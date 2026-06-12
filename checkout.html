@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ghorza & Loly - إتمام الطلب</title>
+    <style>
+        :root { 
+            --cashmere: #ce897b; 
+            --navy: #0d1b2a; 
+            --black: #1a1a1a;
+            --bg: #f7f3eb; 
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--black); padding-bottom: 150px; overflow-x: hidden; }
+
+        header { 
+            background: var(--navy); 
+            padding: 10px 15px; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            height: 70px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .back-link { 
+            text-decoration: none; 
+            color: #ffffff; 
+            border: 2px solid #ffffff; 
+            padding: 8px 16px; 
+            border-radius: 14px; 
+            font-size: 14px; 
+            font-weight: bold; 
+            background: rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 0 14px #ffffff; 
+            transition: all 0.3s var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .back-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); }
+        .back-link:active { transform: scale(0.92); box-shadow: 0 0 20px #ffffff; background: rgba(255, 255, 255, 0.2); }
+        
+        .page-header-title { color: #ffffff; font-size: 21px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
+        .checkout-container { max-width: 550px; margin: 20px auto; padding: 0 15px; }
+
+        .progress-bar { display: flex; justify-content: space-between; margin-bottom: 25px; background: #fff; padding: 12px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(13, 27, 42, 0.05); }
+        .step-dot { width: 35px; height: 35px; border-radius: 50%; background: #eddcd2; color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; transition: var(--transition-smooth); pointer-events: none; }
+        .step-dot.active { background: var(--navy); color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(13,27,42,0.2); }
+        
+        .step-card { background: #ffffff; border-radius: 24px; padding: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); display: none; border: 1px solid rgba(13, 27, 42, 0.05); transition: transform 0.3s var(--transition-smooth); }
+        .step-card.active { display: block; animation: slideIn 0.4s var(--transition-smooth) forwards; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2 { font-size: 18px; color: var(--navy); margin-bottom: 8px; font-weight: bold; }
+        p.subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
+
+        input[type="text"], input[type="tel"], textarea { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 14px; margin-bottom: 15px; font-size: 14px; outline: none; background: #fafafa; transition: all 0.3s ease; }
+        input[type="text"]:focus, input[type="tel"]:focus, textarea:focus { border-color: var(--cashmere); background: #fff; }
+
+        .delivery-note-box { margin-bottom: 15px; padding: 12px 15px; background: #fffdf5; border: 1.5px dashed var(--cashmere); border-radius: 14px; display: flex; align-items: center; gap: 10px; }
+        .delivery-note-box .delivery-text { font-size: 13px; color: var(--navy); font-weight: 700; line-height: 1.5; }
+
+        .pay-option { display: flex; align-items: center; gap: 12px; padding: 16px; border: 2px solid #eee; border-radius: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s ease; background: #fafafa; font-weight: bold; }
+        .pay-option.selected { border-color: var(--cashmere); background: rgba(206, 137, 123, 0.05); }
+
+        .alert-box { background: #fff5f5; border-right: 4px solid #e63946; padding: 12px; border-radius: 10px; font-size: 13px; color: #e63946; font-weight: bold; margin-bottom: 15px; }
+        .wallet-num { background: var(--navy); color: #fff; padding: 8px 12px; border-radius: 8px; font-size: 15px; text-align: center; font-weight: bold; margin-bottom: 15px; display: block; border: 1px dashed var(--cashmere); }
+        .upload-box { border: 2px dashed #ccc; border-radius: 16px; padding: 25px; text-align: center; background: #fafafa; cursor: pointer; }
+
+        .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--navy); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -4px 20px rgba(0,0,0,0.15); z-index: 1000; border-top: 2px solid var(--cashmere); }
+        .price-val { font-size: 20px; font-weight: 900; color: var(--cashmere); }
+
+        .nav-btns { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
+        .btn { padding: 12px 20px; border-radius: 14px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
+        
+        .btn-next { background: var(--cashmere); color: white; }
+        .btn-next:disabled { background: #4b5563 !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.6; }
+        .btn-prev { background: #343a40; color: white; }
+        .btn-submit { background: #2ec4b6; color: white; display: none; }
+        .btn-submit:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; opacity: 0.6; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="cart.html" class="back-link">↩ السلة</a>
+        <div class="page-header-title">إتمام الطلب 💳</div>
+    </header>
+
+    <div class="checkout-container">
+        <div class="progress-bar">
+            <div class="step-dot active" id="dot1">1</div>
+            <div class="step-dot" id="dot2">2</div>
+            <div class="step-dot" id="dot3">3</div>
+            <div class="step-dot" id="dot4" style="display:none;">4</div>
+        </div>
+
+        <div class="step-card active" id="step1">
+            <h2>اكتب الاسم الثلاثي ورقم الهاتف</h2>
+            <p class="subtitle">يرجى كتابة الاسم ثلاثياً ورقم الهاتف لتفعيل زر التالي.</p>
+            <input type="text" id="custName" placeholder="الاسم الثلاثي بالكامل" oninput="validateCurrentStepInputs()">
+            <input type="tel" id="custPhone" placeholder="رقم الهاتف (11 رقم)" maxlength="11" oninput="validateCurrentStepInputs()">
+        </div>
+
+        <div class="step-card" id="step2">
+            <h2>موقع التوصيل (خرائط جوجل)</h2>
+            <p class="subtitle">يرجى إرفاق رابط موقعك يدويًا لتحديد تكلفة الشحن بدقة.</p>
+            <div class="delivery-note-box">
+                <span class="delivery-text">🛵 بمجرد إرسال طلبك، سنتواصل معك فوراً عبر الواتساب لتأكيد قيمة الديلفري المضافة.</span>
+            </div>
+            <input type="text" id="custLocationUrl" placeholder="قم بلصق رابط موقعك من الخرائط هنا..." oninput="validateCurrentStepInputs()">
+            <textarea id="custAddress" rows="3" placeholder="اكتب هنا تفاصيل اضافية للعنوان" oninput="validateCurrentStepInputs()"></textarea>
+        </div>
+
+        <div class="step-card" id="step3">
+            <h2>تحديد طريقة الدفع الآمنة</h2>
+            <p class="subtitle">اختر الوسيلة الأنسب لك.</p>
+            <div class="pay-option" onclick="selectPaymentMethod('فودافون كاش', this)">📱 فودافون كاش</div>
+            <div class="pay-option" onclick="selectPaymentMethod('أورانج كاش', this)">🍊 أورانج كاش</div>
+            <div class="pay-option" onclick="selectPaymentMethod('فوري', this)">⚡ فوري</div>
+            <div class="pay-option" onclick="selectPaymentMethod('كاش عند الاستلام', this)">💵 كاش عند الوصول</div>
+        </div>
+
+        <div class="step-card" id="step4">
+            <h2>تأكيد إثبات التحويل الرقمي</h2>
+            <p class="subtitle">يرجى تحويل المبلغ وإرفاق لقطة شاشة واضحة للوصل.</p>
+            <div class="alert-box">⚠️ خذ لقطة شاشة لرسالة التحويل وارفقها بالأسفل للتحقق.</div>
+            <span class="wallet-num" id="paymentDetailsNote">رقم المحفظة: 01061576259</span>
+            <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+                <span id="uploadStatus">📸 اضغط هنا لإرفاق صورة إيصال الدفع</span>
+                <input type="file" id="fileInput" style="display:none;" accept="image/*" onchange="handleReceiptUpload(event)">
+            </div>
+        </div>
+    </div>
+
+    <div class="action-bar">
+        <div class="price-info">
+            <span style="font-size:11px; color:#ccc;">الإجمالي النهائي:</span>
+            <span id="finalPriceDisplay" class="price-val">0 ج.م</span>
+        </div>
+        <div class="nav-btns">
+            <button class="btn btn-prev" id="prevBtn" onclick="moveStep(-1)">رجوع</button>
+            <button class="btn btn-next" id="nextBtn" onclick="moveStep(1)" disabled>التالي ←</button>
+            <button class="btn btn-submit" id="submitBtn">اطلب الآن 📱</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let totalSteps = 3; 
+        let selectedPayment = "";
+
+        function validateCurrentStepInputs() {
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (currentStep === 1) {
+                const custName = document.getElementById('custName').value.trim();
+                const custPhone = document.getElementById('custPhone').value.trim();
+                const nameWords = custName.split(/\s+/).filter(word => word.length > 0);
+                nextBtn.disabled = !(nameWords.length >= 3 && custPhone.length === 11);
+            } else if (currentStep === 2) {
+                nextBtn.disabled = (document.getElementById('custLocationUrl').value.trim() === "");
+            } else if (currentStep === 3) {
+                if (selectedPayment !== "") {
+                    if (totalSteps === 3) submitBtn.disabled = false;
+                    else nextBtn.disabled = false;
+                } else {
+                    nextBtn.disabled = true;
+                    submitBtn.disabled = true;
+                }
+            } else if (currentStep === 4) {
+                submitBtn.disabled = !(document.getElementById('fileInput').files.length > 0);
+            }
+        }
+
+        function selectPaymentMethod(method, element) {
+            selectedPayment = method;
+            document.querySelectorAll('.pay-option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const dot4 = document.getElementById('dot4');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (method !== 'كاش عند الاستلام') {
+                totalSteps = 4;
+                if(dot4) dot4.style.display = 'flex';
+                if (method === 'فودافون كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة فودافون كاش: 01061576259";
+                else if (method === 'أورانج كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة أورانج كاش: 01274779615";
+                else document.getElementById('paymentDetailsNote').innerText = "رقم حساب فوري للتحويل: 01212638078";
+                
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            } else {
+                totalSteps = 3;
+                if(dot4) dot4.style.display = 'none';
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            }
+            validateCurrentStepInputs();
+        }
+
+        function handleReceiptUpload(event) {
+            if (event.target.files[0]) {
+                document.getElementById('uploadStatus').innerText = `✓ تم إرفاق الإيصال بنجاح`;
+                validateCurrentStepInputs();
+            }
+        }
+
+        function moveStep(direction) {
+            let targetStep = currentStep + direction;
+            if (targetStep >= 1 && targetStep <= totalSteps) updateUI(targetStep);
+        }
+
+        function updateUI(stepNumber) {
+            for (let i = 1; i <= 4; i++) {
+                const card = document.getElementById(`step${i}`);
+                const dot = document.getElementById(`dot${i}`);
+                if (card) card.style.display = (i === stepNumber) ? 'block' : 'none';
+                if (dot) (i === stepNumber) ? dot.classList.add('active') : dot.classList.remove('active');
+            }
+
+            currentStep = stepNumber;
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+
+            prevBtn.style.display = (currentStep === 1) ? 'none' : 'inline-block';
+
+            if (currentStep === 3) {
+                if (selectedPayment === 'كاش عند الاستلام') {
+                    nextBtn.style.display = 'none';
+                    submitBtn.style.display = 'inline-block';
+                } else {
+                    nextBtn.style.display = 'inline-block';
+                    submitBtn.style.display = 'none';
+                }
+            } else if (currentStep === 4) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'inline-block';
+            } else {
+                nextBtn.style.display = 'inline-block';
+                submitBtn.style.display = 'none';
+            }
+            validateCurrentStepInputs();
+        }
+
+        document.getElementById("submitBtn").addEventListener("click", function () {
+            const name = document.getElementById('custName').value.trim();
+            const phoneField = document.getElementById('custPhone').value.trim();
+            const locationUrl = document.getElementById('custLocationUrl').value.trim();
+            const notes = document.getElementById('custAddress').value.trim() || "لا توجد";
+            const totalPrice = document.getElementById('finalPriceDisplay').innerText;
+            
+            let productsDetails = "";
+            let cartData = localStorage.getItem('cartItems') || localStorage.getItem('cart') || localStorage.getItem('products');
+            let textDetails = localStorage.getItem('cartWhatsAppDetails');
+
+            if (textDetails && textDetails.trim().length > 5 && !textDetails.includes("معاينة المنتجات")) {
+                productsDetails = textDetails;
+            } else if (cartData) {
+                try {
+                    let items = JSON.parse(cartData);
+                    if (Array.isArray(items) && items.length > 0) {
+                        items.forEach((item) => {
+                            let pName = item.name || item.title || "منتج";
+                            let pQty = item.quantity || item.qty || item.count || 1;
+                            let pColor = item.color || item.selectedColor || "";
+                            productsDetails += `📦 *${pName}*` + (pColor ? ` (اللون: ${pColor})` : '') + ` [العدد: ${pQty}]\n`;
+                        });
+                    }
+                } catch(e) { productsDetails = ""; }
+            }
+            if (!productsDetails) productsDetails = "راجع السلة لمعاينة المنتجات\n";
+
+            let message = `🛒 *طلب جديد من متجر Ghorza & Loly* 🛒\n\n`;
+            message += `👤 *اسم العميل:* ${name}\n`;
+            message += `📞 *رقم الهاتف:* ${phoneField}\n\n`;
+            message += `🛍️ *المنتجات المطلوبة:*\n${productsDetails}\n`;
+            message += `📍 *رابط الموقع (خرائط جوجل):*\n${locationUrl}\n\n`;
+            message += `📝 *تفاصيل إضافية:* ${notes}\n`;
+            message += `💳 *طريقة الدفع:* ${selectedPayment}\n`;
+            message += `💰 *الإجمالي:* ${totalPrice}\n\n`;
+            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد الديلفري يدويًا._`;
+
+            const whatsappPhone = "201061576259";
+            const url = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(message)}`;
+
+            // تفعيل علامة نجاح الطلب لقراءتها عند العودة لصفحة السلة
+            localStorage.setItem('checkout_success_flag', 'true');
+
+            // تفريغ السلة تماماً وبشكل نهائي لمنع التكرار
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('cart');
+            localStorage.removeItem('products');
+            localStorage.removeItem('cartTotalPrice');
+            localStorage.removeItem('cartWhatsAppDetails');
+
+            // فتح الواتساب في صفحة جديدة
+            window.open(url, '_blank');
+
+            // إرجاع العميل فوراً لصفحة السلة لرؤية رسالة تأكيد الاستلام
+            setTimeout(() => {
+                window.location.replace("cart.html");
+            }, 300);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedPrice = localStorage.getItem('cartTotalPrice');
+            if (savedPrice) document.getElementById('finalPriceDisplay').innerText = `${savedPrice} ج.م`;
+            updateUI(1); 
+        });
+    </script>
+</body>
+</html>

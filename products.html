@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ghorza & Loly - المنتجات</title>
+    <style>
+        :root { 
+            --navy: #0d1b2a; 
+            --black: #1a1a1a;
+            --bg: #f7f3eb; 
+            --cashmere: #ce897b;
+            --orange-tag: #cc5a43;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--black);
+            padding-bottom: 40px;
+            overflow-x: hidden;
+        }
+
+        .page-wrapper {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s var(--transition-smooth), transform 0.3s var(--transition-smooth);
+        }
+        .page-wrapper.page-ready {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        header { 
+            background: var(--navy); 
+            padding: 10px 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 70px;
+        }
+        
+        .right-header-side { display: flex; align-items: center; gap: 12px; }
+
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px 5px; z-index: 2100; transition: transform 0.3s var(--transition-smooth); }
+        .menu-btn span { display: block; width: 22px; height: 3px; background-color: #ffffff; border-radius: 2px; transition: all 0.3s var(--transition-smooth); }
+        .menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .menu-btn.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
+        .menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .menu-btn:hover { transform: scale(1.20); } 
+
+        .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        
+        .logo-img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; transition: transform 0.6s var(--transition-smooth); }
+        .logo-img.rotate { transform: rotate(360deg); }
+        
+        .category-header-title { color: #ffffff; font-size: 19px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap; }
+
+        .cart-link { text-decoration: none; border: 2px solid #ffffff; width: 72px; height: 36px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); box-shadow: 0 0 14px #ffffff; padding: 0 8px; transition: all 0.3s var(--transition-smooth); cursor: pointer; }
+        .cart-link:active { transform: scale(0.92); box-shadow: 0 0 20px #ffffff; background: rgba(255, 255, 255, 0.2); }
+        .cart-count { color: #ffffff; font-weight: bold; font-size: 15px; }
+        .cart-icon { font-size: 16px; filter: brightness(0) invert(1); }
+        .cart-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); }
+
+        .side-menu { height: 100vh; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--navy); overflow-x: hidden; overflow-y: auto; transition: width 0.4s var(--transition-smooth); padding-top: 80px; box-shadow: -5px 0 15px rgba(0,0,0,0.3); }
+        .side-menu a, .dropdown-btn { padding: 15px 20px; text-decoration: none; font-size: 17px; color: #eeeeee; display: block; border: none; background: none; width: 100%; text-align: right; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .side-menu a:active, .dropdown-container-content a:active { background: rgba(255, 255, 255, 0.05); color: var(--cashmere); }
+
+        .dropdown-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
+        .arrow-icon { font-size: 12px; color: #ffffff; transition: transform 0.3s var(--transition-smooth), color 0.3s ease; display: inline-block; }
+        
+        .dropdown-btn.active { color: var(--cashmere) !important; background: rgba(255, 255, 255, 0.02); }
+        .dropdown-btn.active .arrow-icon { transform: rotate(180deg); color: var(--cashmere) !important; }
+
+        .dropdown-container-content a.sub-active { color: var(--cashmere) !important; font-weight: bold; background: rgba(255, 255, 255, 0.01); }
+        .dropdown-container-content { max-height: 0; overflow: hidden; background: rgba(0, 0, 0, 0.2); transition: max-height 0.35s var(--transition-smooth); }
+        .dropdown-container-content a { font-size: 15px; padding: 12px 35px; color: #ccc; border-bottom: none; }
+
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.4); z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.4s var(--transition-smooth); }
+        .menu-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 25px 15px 15px 15px; }
+        
+        .product-card { 
+            background: #ffffff; border-radius: 15px; padding: 12px; 
+            border: 1.5px solid var(--navy); 
+            box-shadow: 0 8px 20px rgba(13, 27, 42, 0.25); 
+            text-decoration: none; color: inherit; display: flex; flex-direction: column;
+            position: relative; overflow: hidden; cursor: pointer; display: none; 
+            transition: transform 0.3s var(--transition-smooth), border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-card:hover { transform: scale(1.10); }
+        .product-card:active { transform: scale(0.96) translateY(2px); box-shadow: 0 4px 10px rgba(13, 27, 42, 0.15); }
+        
+        .img-container { width: 100%; height: 140px; border-radius: 10px; overflow: hidden; background: #fafafa; }
+        .product-card img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .p-name { font-size: 15px; font-weight: bold; margin-top: 10px; color: var(--black); }
+        
+        /* تعديل: جعل الارتفاع مرن لتفادي المساحات البيضاء لو مفيش وصف */
+        .p-short-desc { font-size: 12px; color: #666666; margin-top: 4px; max-height: 32px; overflow: hidden; line-height: 1.3; }
+        
+        .price-ribbon { position: absolute; top: 12px; right: -30px; background: var(--orange-tag); color: #ffffff; font-size: 11px; font-weight: bold; padding: 4px 35px; transform: rotate(45deg); box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 5; transition: background 0.3s var(--transition-smooth); }
+        .product-card:active .price-ribbon { background: #b5432a; }
+        
+        .no-results { grid-column: span 2; text-align: center; color: #888; padding: 40px; display: none; font-size: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="page-wrapper" id="pageWrapper">
+
+        <header>
+            <div class="right-header-side">
+                <div class="menu-btn" id="menuBtn" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <a href="javascript:void(0)" onclick="triggerPageExit('index.html')" class="brand">
+                    <img src="https://i.ibb.co/Y7zCmbss/1779978006473.png" alt="Ghorza & Loly Logo" class="logo-img" id="logoImg">
+                </a>
+            </div>
+            <div class="category-header-title" id="categoryTitleHeader">المنتجات</div>
+            <a href="javascript:void(0)" onclick="triggerPageExit('cart.html')" class="cart-link">
+                <span class="cart-count">0</span>
+                <span class="cart-icon">🛒</span>
+            </a>
+        </header>
+
+        <div id="menuOverlay" class="menu-overlay" onclick="toggleNav()"></div>
+
+        <div id="sideMenu" class="side-menu">
+            <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
+            <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
+            
+            <button class="dropdown-btn active" id="dropBtn" onclick="toggleDropdown()">
+                <span>المنتجات</span>
+                <span class="arrow-icon" id="arrowIcon">▼</span>
+            </button>
+            <div class="dropdown-container-content" id="categoriesDropdown">
+                <a href="javascript:void(0)" data-menu-cat="حظاظات" onclick="goToCategory('حظاظات')">حظاظات</a>
+                <a href="javascript:void(0)" data-menu-cat="سلاسل" onclick="goToCategory('سلاسل')">سلاسل</a>
+                <a href="javascript:void(0)" data-menu-cat="كوسترات" onclick="goToCategory('كوسترات')">كوسترات</a>
+                <a href="javascript:void(0)" data-menu-cat="بوسترات" onclick="goToCategory('بوسترات')">بوسترات</a>
+                <a href="javascript:void(0)" data-menu-cat="ميداليات" onclick="goToCategory('ميداليات')">ميداليات</a>
+            </div>
+            <a href="javascript:void(0)" onclick="triggerPageExit('contact.html')">للتواصل معنا</a>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            
+            <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=زهرة تيوليب&price=20&type=كوسترات&fullDesc=كوستر مصنوع يدويا بالتطريز الاستخدام بتصميم زهرة التيوليب الحمراء وخلفيات بالوان زاهية تزين مكتبك بابعاد (10 سم ، دائرية ، سمك 8ملم).&img1=https://i.ibb.co/nx8Q4q6/IMG-20260604-WA0006.jpg&img2=https://i.ibb.co/dJGcgH9F/IMG-20260604-WA0025.jpg&img3=https://i.ibb.co/hFsYkBk7/IMG-20260606-WA0022.jpg&colors=أصفر وأحمر,وردي غامق وأحمر,أخضر وأحمر,بيج وبنفسجي')">
+                <div class="price-ribbon">20 ج.م</div>
+                <div class="img-container"><img src="https://i.ibb.co/nx8Q4q6/IMG-20260604-WA0006.jpg"></div>
+                <div class="p-name">زهرة تيوليب</div>
+                <div class="p-short-desc">كوستر مصنوع يدويا بالتطريز  بتصميم زهرة التيوليب....</div>
+            </div>
+            
+            <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=كتكوت السعادة&price=20&type=كوسترات&fullDesc=كوستر مطرز لطيف على شكل كتكوت أصفر بملامح بسيطة وناعمة، تضيف لمسة من البهجة والدفء لأي مكان بابعاد (10 سم ، دائرية ، 8 ملم).&img1=https://i.ibb.co/GfqmVHCV/IMG-20260606-WA0054.jpg&img2=https://i.ibb.co/4Zrnb18Z/IMG-20260606-WA0053.jpg&img3=https://i.ibb.co/6JDDb8WH/IMG-20260606-WA0029.jpg')">
+                <div class="price-ribbon">20 ج.م</div>
+                <div class="img-container"><img src="https://i.ibb.co/GfqmVHCV/IMG-20260606-WA0054.jpg"></div>
+                <div class="p-name">كتكوت السعادة</div>
+                <div class="p-short-desc">كوستر مطرز لطيف علي شكل كتكوت ....</div>
+            </div>
+
+            <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=غرزة الطبيعة&price=20&type=كوسترات&fullDesc=كوستر مصنوع يدويا بتفاصيل ساحرة تحاكي الطبيعة البكر وشروق الشمس الدافئ. تفاصيل ناطقة بالجمال و مطرز بابعاد (10 سم ، دائرية ، 8 ملم).&img1=https://i.ibb.co/nNKxgd2p/IMG-20260606-WA0045.jpg&img2=https://i.ibb.co/KchYmmBx/IMG-20260606-WA0044.jpg&img3=https://i.ibb.co/1YXf16ZB/IMG-20260606-WA0057.jpg')">
+                <div class="price-ribbon">20 ج.م</div>
+                <div class="img-container"><img src="https://i.ibb.co/nNKxgd2p/IMG-20260606-WA0045.jpg"></div>
+                <div class="p-name">غرزة الطبيعة</div>
+                <div class="p-short-desc">​كوستر مصنوع يدويا بتفاصيل ساحرة تحاكي....</div>
+            </div>
+
+            <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=غرزة حب&price=20&type=كوسترات&fullDesc=كوستر مطرز يدويا علي شكل قلوب وفيه تدرج الوان ساحر. تصميم عصري يناسب البيوت و المكاتب الحديثة و يضيف لمسة جمالية راقية و بابعاد ( 10 سم ، دائرية ، 8 ملم ).&img1=https://i.ibb.co/G4KCYcYr/IMG-20260606-WA0063.jpg&img2=https://i.ibb.co/GfcDND1H/IMG-20260606-WA0062.jpg&img3=https://i.ibb.co/sdrDGGdm/IMG-20260606-WA0068.jpg&colors=كحلي ولبني وأبيض,كحلي ولبني وكحلي,وردي فاتح وبنفسجي فاتح وبيج,برتقالي و وردي فاتح وبيج,أصفر وبيج وأبيض')">
+                <div class="price-ribbon">20 ج.م</div>
+                <div class="img-container"><img src="https://i.ibb.co/G4KCYcYr/IMG-20260606-WA0063.jpg"></div>
+                <div class="p-name">غرزة حب</div>
+                <div class="p-short-desc">كوستر مطرز يدويا علي شكل قلوب وفيه....</div>
+            </div>
+            
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الورود الكبيرة&price=10&type=كوسترات&img1=https://i.ibb.co/7NtkZ4gR/IMG-20260609-WA0008.jpg&img2=https://i.ibb.co/Tx5tq71f/IMG-20260609-WA0013.jpg&img3=https://i.ibb.co/ns7dwq5b/IMG-20260609-WA0010.jpg&img4=https://i.ibb.co/5WxHtHwr/IMG-20260609-WA0011.jpg&img5=https://i.ibb.co/d039VJbQ/IMG-20260609-WA0012.jpg&colors=أسود,بنفسجي,وردي,أخضر')">
+                <div class="price-ribbon">10 ج.م</div>
+                <div class="img-container"><img src="https://i.ibb.co/7NtkZ4gR/IMG-20260609-WA0008.jpg"></div>
+                <div class="p-name">حظاظة الورود الكبيرة</div>
+            </div>
+            
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الوجوه الصغيرة&price=7&type=حظاظات&img1=https://i.ibb.co/xSjqnksR/IMG-20260609-WA0015.jpg&img2=https://i.ibb.co/5gYW2j8M/IMG-20260609-WA0017.jpg&img3=https://i.ibb.co/KcdrmZ2t/IMG-20260609-WA0016.jpg&img4=https://i.ibb.co/Gfy427Cr/IMG-20260609-WA0018.jpg&img5=https://i.ibb.co/t0ZBZWh/IMG-20260609-WA0019.jpg&colors=أخضر وأخضر فاتح,كحلي وأسود,أزرق ولبني وأخضر فاتح,أسود وأبيض ورمادي')">
+                <div class="price-ribbon">7 ج.م</div>
+                <div class="img-container"><img src="https://i.ibb.co/xSjqnksR/IMG-20260609-WA0015.jpg"></div>
+                <div class="p-name">حظاظة الوجوه الصغيرة</div>
+            </div>
+
+            <div class="no-results" id="noResults">لا توجد منتجات متوفرة في هذا القسم حالياً ⏳</div>
+        </div>
+
+    </div>
+
+    <script>
+        const getQueryParam = (param) => {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        };
+
+        function filterCategory() {
+            let cat = getQueryParam('type'); 
+            if (!cat) cat = "كوسترات"; 
+
+            document.getElementById('categoryTitleHeader').innerText = cat;
+            document.title = "Ghorza & Loly - " + cat;
+
+            let cards = document.getElementsByClassName('product-card');
+            let hasProducts = false;
+
+            for (let i = 0; i < cards.length; i++) {
+                // تعديل مضاف: فحص عناصر الوصف القصير وإخفائها لو كانت فارغة للمنتج الحالي
+                let descEl = cards[i].querySelector('.p-short-desc');
+                if (descEl) {
+                    let text = descEl.innerText.trim();
+                    if (text === "" || text === "null" || text === "undefined" || cards[i].getAttribute('onclick').indexOf('fullDesc=') === -1) {
+                        descEl.style.display = "none";
+                    } else {
+                        descEl.style.display = "block";
+                    }
+                }
+
+                if (cards[i].getAttribute('data-cat') === cat) {
+                    cards[i].style.display = "flex";
+                    hasProducts = true;
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+            document.getElementById('noResults').style.display = hasProducts ? "none" : "block";
+
+            let menuLinks = document.querySelectorAll('#categoriesDropdown a');
+            menuLinks.forEach(link => {
+                if(link.getAttribute('data-menu-cat') === cat) {
+                    link.classList.add('sub-active');
+                } else {
+                    link.classList.remove('sub-active');
+                }
+            });
+
+            var dropdown = document.getElementById("categoriesDropdown");
+            if(dropdown) dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+        }
+
+        function goToCategory(categoryName) {
+            triggerPageExit(`products.html?type=${encodeURIComponent(categoryName)}`);
+        }
+
+        function toggleNav() {
+            var sidebar = document.getElementById("sideMenu");
+            var btn = document.getElementById("menuBtn");
+            var logo = document.getElementById("logoImg");
+            var overlay = document.getElementById("menuOverlay");
+            btn.classList.toggle("open");
+            if(logo) logo.classList.toggle("rotate");
+            overlay.classList.toggle("show");
+            sidebar.style.width = sidebar.style.width === "50vw" ? "0" : "50vw";
+        }
+
+        function toggleDropdown() {
+            var btn = document.getElementById("dropBtn");
+            var dropdown = document.getElementById("categoriesDropdown");
+            
+            btn.classList.toggle("active");
+            if (dropdown.style.maxHeight) {
+                dropdown.style.maxHeight = null;
+            } else {
+                dropdown.style.maxHeight = dropdown.scrollHeight + "px";
+            }
+        }
+
+        function triggerPageExit(url) {
+            var sidebar = document.getElementById("sideMenu");
+            var btn = document.getElementById("menuBtn");
+            var overlay = document.getElementById("menuOverlay");
+            
+            if (sidebar && sidebar.style.width === "50vw") {
+                sidebar.style.width = "0";
+                if(btn) btn.classList.remove("open");
+                if(overlay) overlay.classList.remove("show");
+            }
+            
+            var wrapper = document.getElementById("pageWrapper");
+            if(wrapper) {
+                wrapper.style.opacity = "0";
+                wrapper.style.transform = "translateY(-12px)";
+            }
+            
+            setTimeout(function() { window.location.href = url; }, 250);
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            filterCategory();
+            
+            var wrapper = document.getElementById("pageWrapper");
+            if (wrapper) {
+                wrapper.style.opacity = "";
+                wrapper.style.transform = "";
+                setTimeout(() => {
+                    wrapper.classList.add("page-ready");
+                }, 10);
+            }
+            
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const count = document.querySelector(".cart-count");
+            if(count) count.innerText = cart.length;
+        });
+    </script>
+</body>
+</html>
