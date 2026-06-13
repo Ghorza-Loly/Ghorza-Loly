@@ -254,41 +254,63 @@
         }
 
         document.getElementById("submitBtn").addEventListener("click", function () {
+            // تجميع بيانات العميل
             const name = document.getElementById('custName').value.trim();
             const phoneField = document.getElementById('custPhone').value.trim();
             const locationUrl = document.getElementById('custLocationUrl').value.trim();
-            const notes = document.getElementById('custAddress').value.trim() || "لا توجد";
+            const notes = document.getElementById('custAddress').value.trim() || "لا توجد تفاصيل إضافية";
             const totalPrice = document.getElementById('finalPriceDisplay').innerText;
             
+            // تجميع بيانات المنتجات بدقة متناهية من السلة
             let productsDetails = "";
-            let cartData = localStorage.getItem('cartItems') || localStorage.getItem('cart') || localStorage.getItem('products');
-            let textDetails = localStorage.getItem('cartWhatsAppDetails');
-
-            if (textDetails && textDetails.trim().length > 5 && !textDetails.includes("معاينة المنتجات")) {
-                productsDetails = textDetails;
-            } else if (cartData) {
-                try {
-                    let items = JSON.parse(cartData);
-                    if (Array.isArray(items) && items.length > 0) {
-                        items.forEach((item) => {
-                            let pName = item.name || item.title || "منتج";
-                            let pQty = item.quantity || item.qty || item.count || 1;
-                            let pColor = item.color || item.selectedColor || "";
-                            productsDetails += `📦 *${pName}*` + (pColor ? ` (اللون: ${pColor})` : '') + ` [العدد: ${pQty}]\n`;
-                        });
+            let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            if (cartData.length > 0) {
+                let groupedCart = {};
+                
+                // تجميع المنتجات المتشابهة في الاسم واللون
+                cartData.forEach(item => {
+                    let uniqueKey = item.name + (item.details || '');
+                    if (groupedCart[uniqueKey]) {
+                        groupedCart[uniqueKey].qty += 1;
+                    } else {
+                        groupedCart[uniqueKey] = { ...item, qty: 1 };
                     }
-                } catch(e) { productsDetails = ""; }
-            }
-            if (!productsDetails) productsDetails = "راجع السلة لمعاينة المنتجات\n";
+                });
 
+                let counter = 1;
+                for (let key in groupedCart) {
+                    let item = groupedCart[key];
+                    let pName = item.name || "منتج";
+                    let pQty = item.qty;
+                    let pDetails = (item.details && item.details !== "null" && item.details !== "undefined") ? item.details : "";
+                    
+                    productsDetails += `${counter}- 📦 *${pName}*\n`;
+                    if (pDetails) {
+                        productsDetails += `   🎨 اللون/التفاصيل: ${pDetails}\n`;
+                    }
+                    productsDetails += `   🔢 العدد: ${pQty}\n`;
+                    productsDetails += `   ---------------------------\n`;
+                    counter++;
+                }
+            } else {
+                productsDetails = "⚠️ لم يتم العثور على منتجات في السلة (يرجى مراجعة العميل).\n";
+            }
+
+            // صياغة الرسالة النهائية للواتساب
             let message = `🛒 *طلب جديد من متجر Ghorza & Loly* 🛒\n\n`;
-            message += `👤 *اسم العميل:* ${name}\n`;
+            message += `*--- [بيانات العميل] ---*\n`;
+            message += `👤 *الاسم:* ${name}\n`;
             message += `📞 *رقم الهاتف:* ${phoneField}\n\n`;
-            message += `🛍️ *المنتجات المطلوبة:*\n${productsDetails}\n`;
-            message += `📍 *رابط الموقع (خرائط جوجل):*\n${locationUrl}\n\n`;
-            message += `📝 *تفاصيل إضافية:* ${notes}\n`;
+            
+            message += `*--- [تفاصيل المنتجات المطلوبة] ---*\n`;
+            message += `${productsDetails}\n`;
+            
+            message += `*--- [الدفع والتوصيل] ---*\n`;
             message += `💳 *طريقة الدفع:* ${selectedPayment}\n`;
-            message += `💰 *الإجمالي:* ${totalPrice}\n\n`;
+            message += `💰 *إجمالي السلة:* ${totalPrice}\n\n`;
+            message += `📍 *رابط خرائط جوجل (اللوكيشن):*\n${locationUrl}\n\n`;
+            message += `📝 *ملاحظات العنوان:* ${notes}\n\n`;
             message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد الديلفري يدويًا._`;
 
             const whatsappPhone = "201061576259";
