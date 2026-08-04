@@ -165,6 +165,8 @@
                 const custName = document.getElementById('custName').value.trim();
                 const custPhone = document.getElementById('custPhone').value.trim();
                 const nameWords = custName.split(/\s+/).filter(word => word.length > 0);
+                
+                // تفعيل الزر لما يكتب 3 كلمات على الأقل ورقم موبايل من 11 رقم
                 nextBtn.disabled = !(nameWords.length >= 3 && custPhone.length === 11);
             } else if (currentStep === 2) {
                 nextBtn.disabled = (document.getElementById('custLocationUrl').value.trim() === "");
@@ -297,8 +299,8 @@
             message += `📦 *المنتجات المطلوبة:*\n${productsDetails}\n`;
 
             message += `📍 *اللوكيشن:* ${locationUrl}\n`;
-            message += `📝 *ملاحظات:* ${notes}`;
-            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد تكلفة الديلفري يدويًا
+            message += `📝 *ملاحظات:* ${notes}\n\n`;
+            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد تكلفة الديلفري يدويًا._`;
 
             const whatsappPhone = "201285544167";
             const url = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(message)}`;
