@@ -28,7 +28,7 @@
             height: 70px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
+        
         .back-link { 
             text-decoration: none; 
             color: #ffffff; 
@@ -46,14 +46,14 @@
         }
         .back-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); }
         .back-link:active { transform: scale(0.92); box-shadow: 0 0 20px #ffffff; background: rgba(255, 255, 255, 0.2); }
-
+        
         .page-header-title { color: #ffffff; font-size: 21px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
         .checkout-container { max-width: 550px; margin: 20px auto; padding: 0 15px; }
 
         .progress-bar { display: flex; justify-content: space-between; margin-bottom: 25px; background: #fff; padding: 12px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(13, 27, 42, 0.05); }
         .step-dot { width: 35px; height: 35px; border-radius: 50%; background: #eddcd2; color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; transition: var(--transition-smooth); pointer-events: none; }
         .step-dot.active { background: var(--navy); color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(13,27,42,0.2); }
-
+        
         .step-card { background: #ffffff; border-radius: 24px; padding: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); display: none; border: 1px solid rgba(13, 27, 42, 0.05); transition: transform 0.3s var(--transition-smooth); }
         .step-card.active { display: block; animation: slideIn 0.4s var(--transition-smooth) forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
@@ -63,6 +63,26 @@
 
         input[type="text"], input[type="tel"], textarea { width: 100%; padding: 14px; border: 1.5px solid #eee; border-radius: 14px; margin-bottom: 15px; font-size: 14px; outline: none; background: #fafafa; transition: all 0.3s ease; }
         input[type="text"]:focus, input[type="tel"]:focus, textarea:focus { border-color: var(--cashmere); background: #fff; }
+
+        .map-gps-btn {
+            width: 100%;
+            background: var(--navy);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .map-gps-btn:hover { background: #162a42; }
+        .map-gps-btn:active { transform: scale(0.98); }
 
         .delivery-note-box { margin-bottom: 15px; padding: 12px 15px; background: #fffdf5; border: 1.5px dashed var(--cashmere); border-radius: 14px; display: flex; align-items: center; gap: 10px; }
         .delivery-note-box .delivery-text { font-size: 13px; color: var(--navy); font-weight: 700; line-height: 1.5; }
@@ -79,7 +99,7 @@
 
         .nav-btns { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
         .btn { padding: 12px 20px; border-radius: 14px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
-
+        
         .btn-next { background: var(--cashmere); color: white; }
         .btn-next:disabled { background: #4b5563 !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.6; }
         .btn-prev { background: #343a40; color: white; }
@@ -111,12 +131,15 @@
 
         <div class="step-card" id="step2">
             <h2>موقع التوصيل (خرائط جوجل)</h2>
-            <p class="subtitle">يرجى إرفاق رابط موقعك يدويًا لتحديد تكلفة الشحن بدقة.</p>
+            <p class="subtitle">حدد موقعك المباشر من الـ GPS أو قم بلصق رابط الخرائط الصحيح لتفعيل التالي.</p>
+            
+            <button type="button" class="map-gps-btn" onclick="getMyLocation()">📍 تحديد موقعي الحالي من الخرائط تلقائياً</button>
+
             <div class="delivery-note-box">
                 <span class="delivery-text">🛵 بمجرد إرسال طلبك، سنتواصل معك فوراً عبر الواتساب لتأكيد قيمة الديلفري المضافة.</span>
             </div>
-            <input type="text" id="custLocationUrl" placeholder="قم بلصق رابط موقعك من الخرائط هنا..." oninput="validateCurrentStepInputs()">
-            <textarea id="custAddress" rows="3" placeholder="اكتب هنا تفاصيل اضافية للعنوان" oninput="validateCurrentStepInputs()"></textarea>
+            <input type="text" id="custLocationUrl" placeholder="قم بلصق رابط الخرائط الصحيح هنا..." oninput="validateCurrentStepInputs()">
+            <textarea id="custAddress" rows="3" placeholder="اكتب هنا تفاصيل اضافية للعنوان (رقم الشقة، الدور...)" oninput="validateCurrentStepInputs()"></textarea>
         </div>
 
         <div class="step-card" id="step3">
@@ -157,19 +180,48 @@
         let totalSteps = 3; 
         let selectedPayment = "";
 
+        function isValidGoogleMapsUrl(url) {
+            const val = url.trim().toLowerCase();
+            return (
+                val.includes("google.com/maps") || 
+                val.includes("maps.app.goo.gl") || 
+                val.includes("goo.gl/maps") || 
+                val.includes("maps.google.com")
+            );
+        }
+
+        function getMyLocation() {
+            const locInput = document.getElementById('custLocationUrl');
+            if (navigator.geolocation) {
+                locInput.placeholder = "جاري تحديد موقعك من الخرائط...";
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        locInput.value = `https://maps.google.com/?q=${lat},${lng}`;
+                        validateCurrentStepInputs();
+                    },
+                    (error) => {
+                        locInput.placeholder = "قم بلصق رابط الخرائط الصحيح هنا...";
+                        validateCurrentStepInputs();
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            }
+        }
+
         function validateCurrentStepInputs() {
             const nextBtn = document.getElementById('nextBtn');
             const submitBtn = document.getElementById('submitBtn');
-
+            
             if (currentStep === 1) {
                 const custName = document.getElementById('custName').value.trim();
                 const custPhone = document.getElementById('custPhone').value.trim();
                 const nameWords = custName.split(/\s+/).filter(word => word.length > 0);
-                
-                // تفعيل الزر لما يكتب 3 كلمات على الأقل ورقم موبايل من 11 رقم
                 nextBtn.disabled = !(nameWords.length >= 3 && custPhone.length === 11);
             } else if (currentStep === 2) {
-                nextBtn.disabled = (document.getElementById('custLocationUrl').value.trim() === "");
+                const locUrl = document.getElementById('custLocationUrl').value;
+                nextBtn.disabled = !isValidGoogleMapsUrl(locUrl);
             } else if (currentStep === 3) {
                 if (selectedPayment !== "") {
                     if (totalSteps === 3) submitBtn.disabled = false;
@@ -198,7 +250,7 @@
                 if (method === 'فودافون كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة فودافون كاش: 01061576259";
                 else if (method === 'أورانج كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة أورانج كاش: 01274779615";
                 else document.getElementById('paymentDetailsNote').innerText = "رقم حساب فوري للتحويل: 01212638078";
-
+                
                 nextBtn.style.display = 'inline-block';
                 submitBtn.style.display = 'none';
             } else {
@@ -261,15 +313,15 @@
             const locationUrl = document.getElementById('custLocationUrl').value.trim();
             const notes = document.getElementById('custAddress').value.trim() || "لا توجد تفاصيل إضافية";
             const totalPrice = document.getElementById('finalPriceDisplay').innerText;
-
+            
             let productsDetails = "";
             let cartData = JSON.parse(localStorage.getItem('cart')) || [];
-
+            
             if (cartData.length > 0) {
                 let groupedCart = {};
-
+                
                 cartData.forEach(item => {
-                    let uniqueKey = (item.name || '').trim() + (item.details || '').trim();
+                    let uniqueKey = item.name + (item.details || '');
                     if (groupedCart[uniqueKey]) {
                         groupedCart[uniqueKey].qty += 1;
                     } else {
@@ -277,47 +329,57 @@
                     }
                 });
 
+                let counter = 1;
                 for (let key in groupedCart) {
                     let item = groupedCart[key];
-                    let pName = (item.name || "منتج").trim();
+                    let pName = item.name || "منتج";
                     let pQty = item.qty;
-                    let pDetails = (item.details && item.details !== "null" && item.details !== "undefined") ? item.details.trim() : "";
-
-                    let colorText = pDetails ? ` (${pDetails})` : "";
-                    productsDetails += `• *${pName}*${colorText} ×${pQty}\n`;
+                    let pDetails = (item.details && item.details !== "null" && item.details !== "undefined") ? item.details : "";
+                    
+                    productsDetails += `${counter}- 📦 *${pName}*\n`;
+                    if (pDetails) {
+                        productsDetails += `   🎨 اللون/التفاصيل: ${pDetails}\n`;
+                    }
+                    productsDetails += `   🔢 العدد: ${pQty}\n`;
+                    productsDetails += `   ---------------------------\n`;
+                    counter++;
                 }
             } else {
-                productsDetails = "⚠️ لا توجد منتجات بالسلة.\n";
+                productsDetails = "⚠️ لم يتم العثور على منتجات في السلة.\n";
             }
 
-            let message = `🛍️ *طلب جديد | Ghorza & Loly* 🛍️\n\n`;
-            message += `👤 *العميل:* ${name}\n`;
-            message += `📞 *الهاتف:* ${phoneField}\n`;
-            message += `💳 *الدفع:* ${selectedPayment}\n`;
-            message += `💰 *الإجمالي:* ${totalPrice}\n\n`;
+            let message = `🛒 *طلب جديد من متجر Ghorza & Loly* 🛒\n\n`;
+            message += `*--- [بيانات العميل] ---*\n`;
+            message += `👤 *الاسم:* ${name}\n`;
+            message += `📞 *رقم الهاتف:* ${phoneField}\n\n`;
+            
+            message += `*--- [تفاصيل المنتجات المطلوبة] ---*\n`;
+            message += `${productsDetails}\n`;
+            
+            message += `*--- [الدفع والتوصيل] ---*\n`;
+            message += `💳 *طريقة الدفع:* ${selectedPayment}\n`;
+            message += `💰 *إجمالي السلة:* ${totalPrice}\n\n`;
+            message += `📍 *رابط خرائط جوجل (اللوكيشن):*\n${locationUrl}\n\n`;
+            message += `📝 *ملاحظات العنوان:* ${notes}\n\n`;
+            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد الديلفري يدويًا._`;
 
-            message += `📦 *المنتجات المطلوبة:*\n${productsDetails}\n`;
-
-            message += `📍 *اللوكيشن:* ${locationUrl}\n`;
-            message += `📝 *ملاحظات:* ${notes}\n\n`;
-            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد تكلفة الديلفري يدويًا._`;
-
-            const whatsappPhone = "201285544167";
+            const whatsappPhone = "201061576259";
             const url = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(message)}`;
 
-            localStorage.setItem('checkout_success_flag', 'true');
-
+            // تفريغ السلة تماماً وبشكل نهائي لمنع تكرار الطلب
             localStorage.removeItem('cartItems');
             localStorage.removeItem('cart');
             localStorage.removeItem('products');
             localStorage.removeItem('cartTotalPrice');
             localStorage.removeItem('cartWhatsAppDetails');
 
+            // 1. فتح الواتساب في نافذة جديدة لإرسال الرسالة للتاجر
             window.open(url, '_blank');
 
+            // 2. تحويل العميل بسلاسة لصفحة النجاح المستقلة (success.html)
             setTimeout(() => {
-                window.location.replace("cart.html");
-            }, 300);
+                window.location.replace("success.html");
+            }, 400);
         });
 
         document.addEventListener("DOMContentLoaded", () => {
