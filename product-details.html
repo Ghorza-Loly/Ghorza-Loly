@@ -12,6 +12,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--black); padding-bottom: 100px; overflow-x: hidden; }
 
+        /* قفل سكرول الصفحة الخلفية تماماً لما القائمة تفتح */
+        body.menu-open {
+            overflow: hidden;
+            height: 100vh;
+        }
+
         header { background: var(--navy); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; height: 70px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .right-header-side { display: flex; align-items: center; gap: 12px; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px 5px; z-index: 2100; transition: transform 0.3s var(--transition-smooth); }
@@ -22,19 +28,20 @@
         .logo-img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; transition: transform 0.6s var(--transition-smooth); }
         .logo-img.rotate { transform: rotate(360deg); }
         .page-header-title { color: #ffffff; font-size: 19px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap; }
-        
+
         .cart-link { text-decoration: none; border: 2px solid #ffffff; width: 72px; height: 36px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); box-shadow: 0 0 14px #ffffff; transition: all 0.3s var(--transition-smooth); cursor: pointer; }
         .cart-count { color: #ffffff; font-weight: bold; font-size: 15px; }
         .cart-icon { font-size: 16px; filter: brightness(0) invert(1); }
 
-        .side-menu { height: 100vh; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--navy); overflow-x: hidden; overflow-y: auto; transition: width 0.4s var(--transition-smooth); padding-top: 80px; box-shadow: -5px 0 15px rgba(0,0,0,0.3); }
+        .side-menu { height: 100vh; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--navy); overflow-x: hidden; overflow-y: auto; transition: width 0.4s var(--transition-smooth); padding-top: 80px; box-shadow: -5px 0 15px rgba(0,0,0,0.3); -webkit-overflow-scrolling: touch; }
         .side-menu a, .dropdown-btn { padding: 15px 20px; text-decoration: none; font-size: 17px; color: #eeeeee; display: block; text-align: right; border: none; background: none; width: 100%; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .dropdown-btn { display: flex; justify-content: space-between; align-items: center; }
-        .arrow { font-size: 12px; color: #ffffff; transition: transform 0.3s var(--transition-smooth); display: inline-block; }
+        .dropdown-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
+        .arrow { font-size: 12px; color: #ffffff; transition: transform 0.3s var(--transition-smooth), color 0.3s ease; display: inline-block; }
         .dropdown-btn.active { color: var(--cashmere) !important; background: rgba(255, 255, 255, 0.02); }
-        .dropdown-btn.active .arrow { transform: rotate(180deg); }
+        .dropdown-btn.active .arrow { transform: rotate(180deg); color: var(--cashmere) !important; }
+        
         .dropdown-container { max-height: 0; overflow: hidden; background: rgba(0, 0, 0, 0.2); transition: max-height 0.35s var(--transition-smooth); }
-        .dropdown-container a { padding: 12px 35px; font-size: 15px; color: #ccc; }
+        .dropdown-container a { padding: 12px 35px; font-size: 15px; color: #ccc; border-bottom: none; }
         .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, 0.4); z-index: 1999; opacity: 0; pointer-events: none; transition: opacity 0.4s var(--transition-smooth); }
         .menu-overlay.show { opacity: 1; pointer-events: auto; }
 
@@ -51,9 +58,9 @@
             box-shadow: 0 10px 25px rgba(13, 27, 42, 0.22); 
         }
         .slider { display: flex; transition: transform 0.5s var(--transition-smooth); height: 100%; width: 100%; }
-        
+
         .slider img { width: 100%; height: 100%; flex-shrink: 0; object-fit: cover; }
-        
+
         .arrow-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(13, 27, 42, 0.6); color: white; border: none; width: 40px; height: 40px; cursor: pointer; border-radius: 50%; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .prev { right: 15px; } .next { left: 15px; }
 
@@ -70,8 +77,7 @@
 
         .action-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--navy); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         .price-val { font-size: 22px; font-weight: 900; color: var(--cashmere); }
-        
-        /* التنسيق الأساسي لزرار الإضافة ولحالة التعطيل الرمادية */
+
         .add-btn { background: var(--cashmere); color: white; border: none; padding: 12px 25px; border-radius: 14px; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease; }
         .add-btn.disabled { background: #888888; cursor: not-allowed; }
 
@@ -88,7 +94,7 @@
             </a>
         </div>
         <div class="page-header-title" id="pageHeaderTitle">تفاصيل المنتج</div>
-        
+
         <a href="javascript:void(0)" onclick="triggerPageExit('cart.html')" class="cart-link">
             <span class="cart-count" id="headerCartCount">0</span>
             <span class="cart-icon">🛒</span>
@@ -99,7 +105,7 @@
     <div id="sideMenu" class="side-menu">
         <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
         <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
-        
+
         <button class="dropdown-btn" id="dropBtn" onclick="toggleDropdown()"><span>المنتجات</span><span class="arrow" id="dropArrow">▼</span></button>
         <div class="dropdown-container" id="dropContainer">
             <a href="javascript:void(0)" onclick="goToCategory('حظاظات')">حظاظات</a>
@@ -108,7 +114,7 @@
             <a href="javascript:void(0)" onclick="goToCategory('بوسترات')">بوسترات</a>
             <a href="javascript:void(0)" onclick="goToCategory('ميداليات')">ميداليات</a>
         </div>
-        
+
         <a href="javascript:void(0)" onclick="triggerPageExit('contact.html')">للتواصل معنا</a>
     </div>
 
@@ -121,7 +127,7 @@
     <div class="content">
         <h1 class="title" id="pTitle">جاري التحميل...</h1>
         <p class="full-desc" id="pDesc"></p>
-        
+
         <div class="color-trigger" id="colorTrigger" onclick="toggleModal()">
             <span id="selectedColorText">اختر اللون المفضل</span>
             <span>▼</span>
@@ -144,9 +150,16 @@
         function toggleNav() {
             var s = document.getElementById("sideMenu"), b = document.getElementById("menuBtn"), l = document.getElementById("logoImg"), o = document.getElementById("menuOverlay");
             b.classList.toggle("open"); l.classList.toggle("rotate"); o.classList.toggle("show");
-            s.style.width = (s.style.width === "50vw") ? "0" : "50vw";
+            
+            if (s.style.width === "50vw") {
+                s.style.width = "0";
+                document.body.classList.remove("menu-open");
+            } else {
+                s.style.width = "50vw";
+                document.body.classList.add("menu-open");
+            }
         }
-        
+
         function toggleDropdown() {
             var b = document.getElementById("dropBtn"), c = document.getElementById("dropContainer");
             b.classList.toggle("active"); c.style.maxHeight = c.style.maxHeight ? null : c.scrollHeight + "px";
@@ -157,6 +170,17 @@
         }
 
         function triggerPageExit(url) {
+            var s = document.getElementById("sideMenu");
+            var b = document.getElementById("menuBtn");
+            var o = document.getElementById("menuOverlay");
+
+            if (s && s.style.width === "50vw") {
+                s.style.width = "0";
+                document.body.classList.remove("menu-open");
+                if(b) b.classList.remove("open");
+                if(o) o.classList.remove("show");
+            }
+
             document.body.style.transition = "opacity 0.25s var(--transition-smooth), transform 0.25s var(--transition-smooth)";
             document.body.style.opacity = "0";
             document.body.style.transform = "translateY(-8px)";
@@ -173,7 +197,6 @@
         const getQueryParam = (p) => new URLSearchParams(window.location.search).get(p);
         const colorsParam = getQueryParam('colors');
 
-        // عند تحميل الصفحة: لو المنتج فيه ألوان نجعل الزرار رمادياً ومعطلاً بشكل تلقائي ومبدئي
         if (colorsParam) {
             const cartBtn = document.getElementById('addToCartBtn');
             if(cartBtn) cartBtn.classList.add('disabled');
@@ -187,10 +210,7 @@
                 div.onclick = () => {
                     document.getElementById(`radio_color_${index}`).checked = true;
                     document.getElementById('selectedColorText').innerText = c.trim();
-                    
-                    // بمجرد اختيار اللون يرجع الزرار لنشاطه ولونه القديم تلقائياً
                     if(cartBtn) cartBtn.classList.remove('disabled');
-                    
                     toggleModal();
                 };
                 list.appendChild(div);
@@ -206,7 +226,7 @@
 
         if (name) document.getElementById('pTitle').innerText = name;
         if (price) document.getElementById('pPrice').innerText = price + " ج.م";
-        
+
         if (fullDesc && fullDesc.trim() !== "" && fullDesc !== "null" && fullDesc !== "undefined") {
             document.getElementById('pDesc').innerText = fullDesc;
             document.getElementById('pDesc').style.display = "block";
@@ -230,7 +250,7 @@
         imagesArray.forEach(imgUrl => {
             sliderContent += `<img src="${imgUrl}" alt="${name || 'صورة المنتج'}">`;
         });
-        
+
         if (sliderContent) {
             sliderContainer.innerHTML = sliderContent;
         }
@@ -249,15 +269,14 @@
         function moveSlider(n) {
             const slides = sliderContainer.getElementsByTagName('img');
             if (slides.length <= 1) return; 
-            
+
             slideIndex += n;
             if (slideIndex >= slides.length) { slideIndex = 0; }
             if (slideIndex < 0) { slideIndex = slides.length - 1; }
-            
+
             sliderContainer.style.transform = `translateX(${slideIndex * 100}%)`;
         }
 
-        // دالة إظهار التنبيه التحتاني الصغير (Toast) بأي نص نحدده برمجياً
         function showToast(message) {
             const t = document.getElementById("toast");
             t.innerText = message;
@@ -269,13 +288,11 @@
             const cartBtn = document.getElementById('addToCartBtn');
             const color = document.getElementById('selectedColorText').innerText;
 
-            // إذا كان المنتج له ألوان والزرار لا يزال يحمل كلاس 'disabled'
             if (colorsParam && cartBtn.classList.contains('disabled')) {
                 showToast("من فضلك اختر اللون أولاً 🎨");
-                return; // إيقاف العملية تماماً
+                return;
             }
 
-            // إرسال البيانات الفريش بدقة للسلة بالـ localStorage
             const firstImg = sliderContainer.getElementsByTagName('img')[0]?.src || '';
             const product = { 
                 name: name, 
@@ -283,19 +300,27 @@
                 image: firstImg, 
                 details: colorsParam ? color : null 
             };
-            
+
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             cart.push(product);
             localStorage.setItem('cart', JSON.stringify(cart));
             document.getElementById("headerCartCount").innerText = cart.length;
-            
+
             showToast("تمت الإضافة للسلة بنجاح ✅");
         }
 
         window.addEventListener('pageshow', function(event) {
+            document.body.classList.remove("menu-open");
+            var s = document.getElementById("sideMenu");
+            if(s) s.style.width = "0";
+            var b = document.getElementById("menuBtn");
+            if(b) b.classList.remove("open");
+            var o = document.getElementById("menuOverlay");
+            if(o) o.classList.remove("show");
+
             document.body.style.opacity = "";
             document.body.style.transform = "";
-            
+
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             var cartCountEl = document.getElementById("headerCartCount");
             if(cartCountEl) cartCountEl.innerText = cart.length;
