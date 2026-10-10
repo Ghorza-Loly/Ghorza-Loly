@@ -20,7 +20,7 @@
             font-family: 'Segoe UI', sans-serif; 
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         body { 
             background-color: var(--bg); 
             color: var(--black);
@@ -28,7 +28,12 @@
             overflow-x: hidden;
         }
 
-        /* الحاوية الأساسية المسؤولة عن الحركة الناعمة */
+        /* قفل سكرول الصفحة الخلفية تماماً لما القائمة تفتح */
+        body.menu-open {
+            overflow: hidden;
+            height: 100vh;
+        }
+
         .page-wrapper {
             opacity: 0;
             transform: translateY(10px);
@@ -39,7 +44,6 @@
             transform: translateY(0);
         }
 
-        /* الهيدر الموحد المطابق للرئيسية */
         header { 
             background: var(--navy); 
             padding: 10px 15px; 
@@ -52,14 +56,13 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             height: 70px;
         }
-        
+
         .right-header-side {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        /* زرار الهامبرغر التفاعلي المتطور */
         .menu-btn {
             cursor: pointer;
             display: flex;
@@ -77,16 +80,11 @@
             border-radius: 2px;
             transition: all 0.3s var(--transition-smooth);
         }
-        
+
         .menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
         .menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-        .menu-btn:hover { 
-            transform: scale(1.20);
-        } 
-        .menu:active {
-            transform: scale(0.10);
-        }
+        .menu-btn:hover { transform: scale(1.20); } 
 
         .brand { 
             display: flex; 
@@ -94,7 +92,7 @@
             gap: 12px; 
             text-decoration: none; 
         }
-        
+
         .logo-img { 
             width: 52px; 
             height: 52px; 
@@ -104,14 +102,13 @@
             transition: transform 0.6s var(--transition-smooth);
         }
         .logo-img.rotate { transform: rotate(360deg); }
-        
+
         .brand-name { 
             color: #ffffff; 
             font-size: 21px; 
             font-weight: bold; 
         }
-        
-        /* زرار السلة المطور بإطار وتوهج ظل أبيض صريح */
+
         .cart-link { 
             text-decoration: none; 
             border: 2px solid #ffffff; 
@@ -134,12 +131,8 @@
         }
         .cart-count { color: #ffffff; font-weight: bold; font-size: 15px; }
         .cart-icon { font-size: 16px; filter: brightness(0) invert(1); }
-        .cart-link:hover {
-            transform: scale(1.1); 
-            filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1));      
-        }
+        .cart-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); }
 
-        /* القائمة الجانبية الموحدة (50vw) والـ Overlay */
         .side-menu {
             height: 100vh;
             width: 0; 
@@ -153,6 +146,7 @@
             transition: width 0.4s var(--transition-smooth); 
             padding-top: 80px;
             box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            -webkit-overflow-scrolling: touch;
         }
         .side-menu a, .dropdown-btn {
             padding: 15px 20px;
@@ -173,8 +167,7 @@
             background: rgba(255, 255, 255, 0.05);
             color: var(--cashmere);
         }
-        
-        /* تلوين الصفحة الحالية في المنيو */
+
         .side-menu a.active-page {
             color: var(--cashmere) !important;
             background: rgba(255, 255, 255, 0.02);
@@ -187,13 +180,13 @@
             width: 100%;
             box-sizing: border-box;
         }
-        
+
         .arrow-icon { 
             font-size: 12px; 
             color: #ffffff; 
             transition: transform 0.3s var(--transition-smooth), color 0.3s ease; 
         }
-        
+
         .dropdown-btn.active { 
             color: var(--cashmere) !important; 
             background: rgba(255, 255, 255, 0.02); 
@@ -225,7 +218,6 @@
         }
         .menu-overlay.show { opacity: 1; pointer-events: auto; }
 
-        /* ستايل كارت محتوى صفحة التواصل المظبوط */
         .contact-container { 
             max-width: 500px; 
             margin: 30px auto; 
@@ -250,7 +242,6 @@
             line-height: 1.6;
         }
 
-        /* بوكس عرض الأرقام الكلاسيكي الراقي */
         .numbers-box {
             background: rgba(13, 27, 42, 0.02);
             border: 1px dashed var(--cashmere);
@@ -258,24 +249,23 @@
             padding: 15px 20px;
             margin-bottom: 25px;
         }
-        
+
         .info-row {
             display: flex;
-            flex-direction: column; /* جعل العناصر تتراص رأسياً تحت بعضها */
+            flex-direction: column;
             align-items: flex-start;
             padding: 12px 0;
             font-size: 15px;
             font-weight: bold;
-            gap: 8px; /* مسافة ناعمة بين العنوان والأرقام */
+            gap: 8px;
         }
-        
+
         .info-row:not(:last-child) {
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        
+
         .info-label { color: #555; display: flex; align-items: center; gap: 8px; }
-        
-        /* تنسيق روابط الأرقام التفاعلية */
+
         .info-val { 
             color: var(--navy); 
             font-size: 16px; 
@@ -285,7 +275,7 @@
             padding: 4px 10px;
             background: rgba(13, 27, 42, 0.05);
             border-radius: 8px;
-            width: 100%; /* تملأ المساحة المتاحة لتسهيل الضغط بالموبايل */
+            width: 100%;
             text-align: right;
             transition: all 0.2s ease;
         }
@@ -295,7 +285,6 @@
             transform: scale(0.98);
         }
 
-        /* الفاصل البصري */
         .section-divider {
             font-size: 13px;
             color: #777;
@@ -314,7 +303,6 @@
             background: #ddd;
         }
 
-        /* أزرار السوشيال ميديا الحركية المخصصة */
         .social-btn {
             display: flex;
             align-items: center;
@@ -333,7 +321,6 @@
             transform: scale(1.05); 
             filter: drop-shadow(0 0 12px rgb(0, 0, 0));      
         }
-
         .social-btn:active { transform: scale(0.96); opacity: 0.9; }
 
         .btn-Whatsapp { background: #2ecc71;}
@@ -368,9 +355,8 @@
 
         <div id="sideMenu" class="side-menu">
             <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
-            
             <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
-            
+
             <div class="dropdown-wrapper">
                 <button class="dropdown-btn" id="dropBtn" onclick="toggleDropdown()">
                     <span>المنتجات</span>
@@ -389,18 +375,17 @@
 
         <div class="contact-container">
             <div class="contact-card">
-                
                 <p class="problem-text">لو فيه أي مشكلة أو حابين تستفسروا عن تفاصيل معينة، تواصلوا معنا فوراً:</p>
 
                 <div class="numbers-box">
                     <div class="info-row">
                         <span class="info-label">📞 اضغط للاتصال الهاتفي:</span>
-                        <a href="tel:01212638078" class="info-val">📱 01212638078</a>
+                        <a href="tel:01285544167" class="info-val">📱 01285544167</a>
                         <a href="tel:01061576259" class="info-val">📱 01061576259</a>
                     </div>
                     <div class="info-row">
                         <span class="info-label">💬 اضغط لفتح محادثة واتساب:</span>
-                        <a href="https://wa.me/201212638078" target="_blank" class="info-val">💚 01212638078</a>
+                        <a href="https://wa.me/201285544167" target="_blank" class="info-val">💚 01285544167</a>
                         <a href="https://wa.me/201061576259" target="_blank" class="info-val">💚 01061576259</a>
                     </div>
                 </div>
@@ -415,12 +400,10 @@
                     <span>🔵 فيسبوك - Facebook</span>
                     <span class="arrow-left">◀</span>
                 </a>
-
-                <a href=" https://instagram.com/ghorza.loly" target="_blank" class="social-btn btn-instagram">
+                <a href="https://instagram.com/ghorza.loly" target="_blank" class="social-btn btn-instagram">
                     <span>📸 انستجرام - Instagram</span>
                     <span class="arrow-left">◀</span>
                 </a>
-
             </div>
         </div>
 
@@ -443,15 +426,17 @@
 
             if (sidebar.style.width === "50vw") {
                 sidebar.style.width = "0";
+                document.body.classList.remove("menu-open");
             } else {
                 sidebar.style.width = "50vw"; 
+                document.body.classList.add("menu-open");
             }
         }
 
         function toggleDropdown() {
             var btn = document.getElementById("dropBtn");
             var dropdown = document.getElementById("categoriesDropdown");
-            
+
             btn.classList.toggle("active");
             if (dropdown.style.maxHeight) {
                 dropdown.style.maxHeight = null;
@@ -464,25 +449,34 @@
             var sidebar = document.getElementById("sideMenu");
             var btn = document.getElementById("menuBtn");
             var overlay = document.getElementById("menuOverlay");
-            
+
             if (sidebar && sidebar.style.width === "50vw") {
                 sidebar.style.width = "0";
+                document.body.classList.remove("menu-open");
                 if(btn) btn.classList.remove("open");
                 if(overlay) overlay.classList.remove("show");
             }
-            
+
             var wrapper = document.getElementById("pageWrapper");
             if(wrapper) {
                 wrapper.style.opacity = "0";
                 wrapper.style.transform = "translateY(-12px)";
             }
-            
+
             setTimeout(function() {
                 window.location.href = url;
             }, 250);
         }
 
         window.addEventListener('pageshow', function(event) {
+            document.body.classList.remove("menu-open");
+            var sidebar = document.getElementById("sideMenu");
+            if(sidebar) sidebar.style.width = "0";
+            var btn = document.getElementById("menuBtn");
+            if(btn) btn.classList.remove("open");
+            var overlay = document.getElementById("menuOverlay");
+            if(overlay) overlay.classList.remove("show");
+
             var wrapper = document.getElementById("pageWrapper");
             if (wrapper) {
                 wrapper.style.opacity = "";
