@@ -147,7 +147,6 @@
             <p class="subtitle">اختر الوسيلة الأنسب لك.</p>
             <div class="pay-option" onclick="selectPaymentMethod('فودافون كاش', this)">📱 فودافون كاش</div>
             <div class="pay-option" onclick="selectPaymentMethod('أورانج كاش', this)">🍊 أورانج كاش</div>
-            <div class="pay-option" onclick="selectPaymentMethod('فوري', this)">⚡ فوري</div>
             <div class="pay-option" onclick="selectPaymentMethod('كاش عند الاستلام', this)">💵 كاش عند الوصول</div>
         </div>
 
@@ -249,8 +248,7 @@
                 if(dot4) dot4.style.display = 'flex';
                 if (method === 'فودافون كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة فودافون كاش: 01061576259";
                 else if (method === 'أورانج كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة أورانج كاش: 01274779615";
-                else document.getElementById('paymentDetailsNote').innerText = "رقم حساب فوري للتحويل: 01212638078";
-                
+                else
                 nextBtn.style.display = 'inline-block';
                 submitBtn.style.display = 'none';
             } else {
