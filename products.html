@@ -21,12 +21,18 @@
             font-family: 'Segoe UI', sans-serif; 
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         body { 
             background-color: var(--bg); 
             color: var(--black);
             padding-bottom: 40px;
             overflow-x: hidden;
+        }
+
+        /* قفل سكرول الصفحة الخلفية تماماً لما القائمة تفتح */
+        body.menu-open {
+            overflow: hidden;
+            height: 100vh;
         }
 
         .page-wrapper {
@@ -51,7 +57,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             height: 70px;
         }
-        
+
         .right-header-side { display: flex; align-items: center; gap: 12px; }
 
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px 5px; z-index: 2100; transition: transform 0.3s var(--transition-smooth); }
@@ -62,10 +68,10 @@
         .menu-btn:hover { transform: scale(1.20); } 
 
         .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-        
+
         .logo-img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; transition: transform 0.6s var(--transition-smooth); }
         .logo-img.rotate { transform: rotate(360deg); }
-        
+
         .category-header-title { color: #ffffff; font-size: 19px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap; }
 
         .cart-link { text-decoration: none; border: 2px solid #ffffff; width: 72px; height: 36px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); box-shadow: 0 0 14px #ffffff; padding: 0 8px; transition: all 0.3s var(--transition-smooth); cursor: pointer; }
@@ -74,13 +80,13 @@
         .cart-icon { font-size: 16px; filter: brightness(0) invert(1); }
         .cart-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); }
 
-        .side-menu { height: 100vh; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--navy); overflow-x: hidden; overflow-y: auto; transition: width 0.4s var(--transition-smooth); padding-top: 80px; box-shadow: -5px 0 15px rgba(0,0,0,0.3); }
+        .side-menu { height: 100vh; width: 0; position: fixed; z-index: 2000; top: 0; right: 0; background-color: var(--navy); overflow-x: hidden; overflow-y: auto; transition: width 0.4s var(--transition-smooth); padding-top: 80px; box-shadow: -5px 0 15px rgba(0,0,0,0.3); -webkit-overflow-scrolling: touch; }
         .side-menu a, .dropdown-btn { padding: 15px 20px; text-decoration: none; font-size: 17px; color: #eeeeee; display: block; border: none; background: none; width: 100%; text-align: right; cursor: pointer; white-space: nowrap; transition: all 0.25s ease; border-bottom: 1px solid rgba(255,255,255,0.03); }
         .side-menu a:active, .dropdown-container-content a:active { background: rgba(255, 255, 255, 0.05); color: var(--cashmere); }
 
         .dropdown-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
         .arrow-icon { font-size: 12px; color: #ffffff; transition: transform 0.3s var(--transition-smooth), color 0.3s ease; display: inline-block; }
-        
+
         .dropdown-btn.active { color: var(--cashmere) !important; background: rgba(255, 255, 255, 0.02); }
         .dropdown-btn.active .arrow-icon { transform: rotate(180deg); color: var(--cashmere) !important; }
 
@@ -92,7 +98,7 @@
         .menu-overlay.show { opacity: 1; pointer-events: auto; }
 
         .products-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 25px 15px 15px 15px; }
-        
+
         .product-card { 
             background: #ffffff; border-radius: 15px; padding: 12px; 
             border: 1.5px solid var(--navy); 
@@ -103,18 +109,16 @@
         }
         .product-card:hover { transform: scale(1.10); }
         .product-card:active { transform: scale(0.96) translateY(2px); box-shadow: 0 4px 10px rgba(13, 27, 42, 0.15); }
-        
+
         .img-container { width: 100%; height: 140px; border-radius: 10px; overflow: hidden; background: #fafafa; }
         .product-card img { width: 100%; height: 100%; object-fit: cover; }
-        
+
         .p-name { font-size: 15px; font-weight: bold; margin-top: 10px; color: var(--black); }
-        
-        /* تعديل: جعل الارتفاع مرن لتفادي المساحات البيضاء لو مفيش وصف */
         .p-short-desc { font-size: 12px; color: #666666; margin-top: 4px; max-height: 32px; overflow: hidden; line-height: 1.3; }
-        
+
         .price-ribbon { position: absolute; top: 12px; right: -30px; background: var(--orange-tag); color: #ffffff; font-size: 11px; font-weight: bold; padding: 4px 35px; transform: rotate(45deg); box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 5; transition: background 0.3s var(--transition-smooth); }
         .product-card:active .price-ribbon { background: #b5432a; }
-        
+
         .no-results { grid-column: span 2; text-align: center; color: #888; padding: 40px; display: none; font-size: 16px; font-weight: bold; }
     </style>
 </head>
@@ -145,7 +149,7 @@
         <div id="sideMenu" class="side-menu">
             <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
             <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
-            
+
             <button class="dropdown-btn active" id="dropBtn" onclick="toggleDropdown()">
                 <span>المنتجات</span>
                 <span class="arrow-icon" id="arrowIcon">▼</span>
@@ -161,132 +165,96 @@
         </div>
 
         <div class="products-grid" id="productsGrid">
-            
-
             <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=زهرة تيوليب&price=25&type=كوسترات&fullDesc=كوستر مصنوع يدويا بالتطريز الاستخدام بتصميم زهرة التيوليب الحمراء وخلفيات بالوان زاهية تزين مكتبك بابعاد (10 سم ، دائرية ، سمك 8ملم).&img1=https://i.ibb.co/nx8Q4q6/IMG-20260604-WA0006.jpg&img2=https://i.ibb.co/dJGcgH9F/IMG-20260604-WA0025.jpg&img3=https://i.ibb.co/hFsYkBk7/IMG-20260606-WA0022.jpg&colors=أصفر وأحمر,وردي غامق وأحمر,أخضر وأحمر,بيج وبنفسجي')">
                 <div class="price-ribbon">25 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/nx8Q4q6/IMG-20260604-WA0006.jpg"></div>
                 <div class="p-name">زهرة تيوليب</div>
                 <div class="p-short-desc">كوستر مصنوع يدويا بالتطريز  بتصميم زهرة التيوليب....</div>
             </div>
-
-            
             <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=كتكوت السعادة&price=25&type=كوسترات&fullDesc=كوستر مطرز لطيف على شكل كتكوت أصفر بملامح بسيطة وناعمة، تضيف لمسة من البهجة والدفء لأي مكان بابعاد (10 سم ، دائرية ، 8 ملم).&img1=https://i.ibb.co/GfqmVHCV/IMG-20260606-WA0054.jpg&img2=https://i.ibb.co/4Zrnb18Z/IMG-20260606-WA0053.jpg&img3=https://i.ibb.co/6JDDb8WH/IMG-20260606-WA0029.jpg')">
                 <div class="price-ribbon">25 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/GfqmVHCV/IMG-20260606-WA0054.jpg"></div>
                 <div class="p-name">كتكوت السعادة</div>
                 <div class="p-short-desc">كوستر مطرز لطيف علي شكل كتكوت ....</div>
             </div>
-
-
             <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=غرزة الطبيعة&price=25&type=كوسترات&fullDesc=كوستر مصنوع يدويا بتفاصيل ساحرة تحاكي الطبيعة البكر وشروق الشمس الدافئ. تفاصيل ناطقة بالجمال و مطرز بابعاد (10 سم ، دائرية ، 8 ملم).&img1=https://i.ibb.co/nNKxgd2p/IMG-20260606-WA0045.jpg&img2=https://i.ibb.co/KchYmmBx/IMG-20260606-WA0044.jpg&img3=https://i.ibb.co/1YXf16ZB/IMG-20260606-WA0057.jpg')">
                 <div class="price-ribbon">25 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/nNKxgd2p/IMG-20260606-WA0045.jpg"></div>
                 <div class="p-name">غرزة الطبيعة</div>
-                <div class="p-short-desc">​كوستر مصنوع يدويا بتفاصيل ساحرة تحاكي....</div>
+                <div class="p-short-desc">كوستر مصنوع يدويا بتفاصيل ساحرة تحاكي....</div>
             </div>
-
-
             <div class="product-card" data-cat="كوسترات" onclick="triggerPageExit('product-details.html?name=غرزة حب&price=25&type=كوسترات&fullDesc=كوستر مطرز يدويا علي شكل قلوب وفيه تدرج الوان ساحر. تصميم عصري يناسب البيوت و المكاتب الحديثة و يضيف لمسة جمالية راقية و بابعاد ( 10 سم ، دائرية ، 8 ملم ).&img1=https://i.ibb.co/G4KCYcYr/IMG-20260606-WA0063.jpg&img2=https://i.ibb.co/GfcDND1H/IMG-20260606-WA0062.jpg&img3=https://i.ibb.co/sdrDGGdm/IMG-20260606-WA0068.jpg&colors=كحلي ولبني وأبيض,كحلي ولبني وكحلي,وردي فاتح وبنفسجي فاتح وبيج,برتقالي و وردي فاتح وبيج,أصفر وبيج وأبيض')">
                 <div class="price-ribbon">25 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/G4KCYcYr/IMG-20260606-WA0063.jpg"></div>
                 <div class="p-name">غرزة حب</div>
                 <div class="p-short-desc">كوستر مطرز يدويا علي شكل قلوب وفيه....</div>
             </div>
-
-            
             <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الورود الكبيرة&price=10&type=حظاظات&img1=https://i.ibb.co/7NtkZ4gR/IMG-20260609-WA0008.jpg&img2=https://i.ibb.co/Tx5tq71f/IMG-20260609-WA0013.jpg&img3=https://i.ibb.co/ns7dwq5b/IMG-20260609-WA0010.jpg&img4=https://i.ibb.co/5WxHtHwr/IMG-20260609-WA0011.jpg&img5=https://i.ibb.co/d039VJbQ/IMG-20260609-WA0012.jpg&colors=أسود,بنفسجي,وردي,أخضر')">
                 <div class="price-ribbon">10 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/7NtkZ4gR/IMG-20260609-WA0008.jpg"></div>
                 <div class="p-name">حظاظة الورود الكبيرة</div>
             </div>
-            
-
-<div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة ميكس&price=10&type=حظاظات&img1=https://i.ibb.co/0pHQ64wP/IMG-20260620-WA0016.jpg&img2=https://i.ibb.co/4RsYH6Sh/1782411231538.png&img3=https://i.ibb.co/cX77FQCW/1782411238945.jpg&img4=https://i.ibb.co/Y4s4HPL9/1782411247111.png&img5=https://i.ibb.co/Z6Bm5C8Z/1782411423327.png&colors=أخضر وأسود,شفاف وردي أزرق,شفاف وبنفسجي فاتح,رمادي وأزرق')">
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة ميكس&price=10&type=حظاظات&img1=https://i.ibb.co/0pHQ64wP/IMG-20260620-WA0016.jpg&img2=https://i.ibb.co/4RsYH6Sh/1782411231538.png&img3=https://i.ibb.co/cX77FQCW/1782411238945.jpg&img4=https://i.ibb.co/Y4s4HPL9/1782411247111.png&img5=https://i.ibb.co/Z6Bm5C8Z/1782411423327.png&colors=أخضر وأسود,شفاف وردي أزرق,شفاف وبنفسجي فاتح,رمادي وأزرق')">
                 <div class="price-ribbon">10 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/0pHQ64wP/IMG-20260620-WA0016.jpg"></div>
                 <div class="p-name">حظاظة ميكس</div>
             </div>
-
-
-<div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة المعدن&price=10&type=حظاظات&img1=https://i.ibb.co/FLQ0ywDh/1782492969856.png&img2=https://i.ibb.co/9mqNWCDY/1782502241862.png&img3=https://i.ibb.co/QjJSwNJL/1782502259963.png&img4=https://i.ibb.co/yFvBvjYP/1782502425850.png&colors=أحمر,بنفسجي,بني')">
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة المعدن&price=10&type=حظاظات&img1=https://i.ibb.co/FLQ0ywDh/1782492969856.png&img2=https://i.ibb.co/9mqNWCDY/1782502241862.png&img3=https://i.ibb.co/QjJSwNJL/1782502259963.png&img4=https://i.ibb.co/yFvBvjYP/1782502425850.png&colors=أحمر,بنفسجي,بني')">
                 <div class="price-ribbon">10 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/FLQ0ywDh/1782492969856.png"></div>
                 <div class="p-name">حظاظة المعدن</div>
             </div>
-
-
-<div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=الحظاظة الكابل&price=30&type=حظاظات&img1=https://i.ibb.co/LdRJrn7h/1782504197332.png')">
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=الحظاظة الكابل&price=30&type=حظاظات&img1=https://i.ibb.co/LdRJrn7h/1782504197332.png')">
                 <div class="price-ribbon">30 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/LdRJrn7h/1782504197332.png"></div>
                 <div class="p-name">الحظاظة الكابل</div>
             </div>
-
-
-<div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الصلبان الكبيرة&price=15&type=حظاظات&img1=https://i.ibb.co/XxXDtWJ9/1781797125656.png&img2=https://i.ibb.co/21vgJ9mj/Screenshot-Gallery.png&img3=https://i.ibb.co/VndXZJG/Screenshot-Gallery.png&img4=https://i.ibb.co/1tLXMc9F/Screenshot-Gallery.png&img5=https://i.ibb.co/spXdZc7C/1781798642834.png&colors=أحمر,بني,بنفسجي,رمادي')">
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الصلبان الكبيرة&price=15&type=حظاظات&img1=https://i.ibb.co/XxXDtWJ9/1781797125656.png&img2=https://i.ibb.co/21vgJ9mj/Screenshot-Gallery.png&img3=https://i.ibb.co/VndXZJG/Screenshot-Gallery.png&img4=https://i.ibb.co/1tLXMc9F/Screenshot-Gallery.png&img5=https://i.ibb.co/spXdZc7C/1781798642834.png&colors=أحمر,بني,بنفسجي,رمادي')">
                 <div class="price-ribbon">15 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/XxXDtWJ9/1781797125656.png"></div>
                 <div class="p-name">حظاظة الصلبان الكبيرة</div>
             </div>
-
-
             <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الوجوه الصغيرة&price=8&type=حظاظات&img1=https://i.ibb.co/xSjqnksR/IMG-20260609-WA0015.jpg&img2=https://i.ibb.co/5gYW2j8M/IMG-20260609-WA0017.jpg&img3=https://i.ibb.co/KcdrmZ2t/IMG-20260609-WA0016.jpg&img4=https://i.ibb.co/Gfy427Cr/IMG-20260609-WA0018.jpg&img5=https://i.ibb.co/t0ZBZWh/IMG-20260609-WA0019.jpg&colors=أخضر وأخضر فاتح,كحلي وأسود,أزرق ولبني وأخضر فاتح,أسود وأبيض ورمادي')">
                 <div class="price-ribbon">8 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/xSjqnksR/IMG-20260609-WA0015.jpg"></div>
                 <div class="p-name">حظاظة الوجوه الصغيرة</div>
             </div>
-
-
-<div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الصلبان الصغيرة&price=10&type=حظاظات&img1=https://i.ibb.co/zcV5xXX/1782412232107.jpg&img2=https://i.ibb.co/Rp104xTN/1782416934134.png&img3=https://i.ibb.co/SXkw0K1H/1782416939335.png&img4=https://i.ibb.co/C5HfhrVf/1782490380021.png&img5=https://i.ibb.co/JwXyYNCv/1782490771656.png&img6=https://i.ibb.co/PGLc8n02/1782490375204.png&img7=https://i.ibb.co/9kxDM9tw/1782490789082.png&img8=https://i.ibb.co/KzSCLGMW/1782416929612.jpg&colors=أحمر,لبني,أصفر,وردي فاتح,بىتقالي,بنفسجي فاتح,أخضر')">
+            <div class="product-card" data-cat="حظاظات" onclick="triggerPageExit('product-details.html?name=حظاظة الصلبان الصغيرة&price=10&type=حظاظات&img1=https://i.ibb.co/zcV5xXX/1782412232107.jpg&img2=https://i.ibb.co/Rp104xTN/1782416934134.png&img3=https://i.ibb.co/SXkw0K1H/1782416939335.png&img4=https://i.ibb.co/C5HfhrVf/1782490380021.png&img5=https://i.ibb.co/JwXyYNCv/1782490771656.png&img6=https://i.ibb.co/PGLc8n02/1782490375204.png&img7=https://i.ibb.co/9kxDM9tw/1782490789082.png&img8=https://i.ibb.co/KzSCLGMW/1782416929612.jpg&colors=أحمر,لبني,أصفر,وردي فاتح,بىتقالي,بنفسجي فاتح,أخضر')">
                 <div class="price-ribbon">10 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/zcV5xXX/1782412232107.jpg"></div>
                 <div class="p-name">حظاظة الصلبان الصغيرة</div>
             </div>
-
-
-<div class="product-card" data-cat="ميداليات" onclick="triggerPageExit('product-details.html?name=ميدالية لولي فلاور&price=20&type=ميداليات&img1=https://i.ibb.co/YFLW4WDT/1781800094227.png&img2=https://i.ibb.co/gXN8sG9/1781692940168.png&img3=https://i.ibb.co/60gZhFxf/1781800365460.png&colors=أحمر,أزرق')">
+            <div class="product-card" data-cat="ميداليات" onclick="triggerPageExit('product-details.html?name=ميدالية لولي فلاور&price=20&type=ميداليات&img1=https://i.ibb.co/YFLW4WDT/1781800094227.png&img2=https://i.ibb.co/gXN8sG9/1781692940168.png&img3=https://i.ibb.co/60gZhFxf/1781800365460.png&colors=أحمر,أزرق')">
                 <div class="price-ribbon">20 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/YFLW4WDT/1781800094227.png"></div>
                 <div class="p-name">ميدالية لولي فلاور</div>
             </div>
-
-
-<div class="product-card" data-cat="ميداليات" onclick="triggerPageExit('product-details.html?name=ميدالية الصليب&price=15&type=ميدالية&img1=https://i.ibb.co/pFkyBY5/1781693483598.png&img2=https://i.ibb.co/kgSZjgKM/1781693496088.png&img3=https://i.ibb.co/ymfMS4xf/1781693504013.png')">
+            <div class="product-card" data-cat="ميداليات" onclick="triggerPageExit('product-details.html?name=ميدالية الصليب&price=15&type=ميدالية&img1=https://i.ibb.co/pFkyBY5/1781693483598.png&img2=https://i.ibb.co/kgSZjgKM/1781693496088.png&img3=https://i.ibb.co/ymfMS4xf/1781693504013.png')">
                 <div class="price-ribbon">15 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/pFkyBY5/1781693483598.png"></div>
                 <div class="p-name">ميدالية الصليب</div>
             </div>
-
-
-<div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الصليب&price=20&type=سلاسل&img1=https://i.ibb.co/VWvFFcfV/1781692673732.png&img2=https://i.ibb.co/9FQMhbY/1781691617369.png&img3=https://i.ibb.co/MDJy7K8P/1781692682170.png')">
+            <div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الصليب&price=20&type=سلاسل&img1=https://i.ibb.co/VWvFFcfV/1781692673732.png&img2=https://i.ibb.co/9FQMhbY/1781691617369.png&img3=https://i.ibb.co/MDJy7K8P/1781692682170.png')">
                 <div class="price-ribbon">20 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/VWvFFcfV/1781692673732.png"></div>
                 <div class="p-name">سلسلة الصليب</div>
             </div>
-
-
-<div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الخرز الصغير بصليب&price=20&type=سلاسل&img1=https://i.ibb.co/JjcfsVYc/1782077960530.png')">
+            <div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الخرز الصغير بصليب&price=20&type=سلاسل&img1=https://i.ibb.co/JjcfsVYc/1782077960530.png')">
                 <div class="price-ribbon">20 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/JjcfsVYc/1782077960530.png"></div>
                 <div class="p-name">سلسلة الخرز الصغير بصليب</div>
             </div>
-
-
-<div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الصليب الصغير&price=20&type=سلاسل&img1=https://i.ibb.co/3yfsyrq8/1782078914729.png')">
+            <div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الصليب الصغير&price=20&type=سلاسل&img1=https://i.ibb.co/3yfsyrq8/1782078914729.png')">
                 <div class="price-ribbon">20 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/3yfsyrq8/1782078914729.png"></div>
                 <div class="p-name">سلسلة الصليب الصغير</div>
             </div>
-
-
-<div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الخرز الصغيرة&price=20&type=سلاسل&img1=https://i.ibb.co/p6QNpp0N/1782078855128.png')">
+            <div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الخرز الصغيرة&price=20&type=سلاسل&img1=https://i.ibb.co/p6QNpp0N/1782078855128.png')">
                 <div class="price-ribbon">20 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/p6QNpp0N/1782078855128.png"></div>
                 <div class="p-name">سلسلة الخرز الصغيرة</div>
             </div>
-
-
-<div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الخرز الكبير بصليب&price=20&type=سلاسل&img1=https://i.ibb.co/gLhXv0JN/1782078258089.png')">
+            <div class="product-card" data-cat="سلاسل" onclick="triggerPageExit('product-details.html?name=سلسلة الخرز الكبير بصليب&price=20&type=سلاسل&img1=https://i.ibb.co/gLhXv0JN/1782078258089.png')">
                 <div class="price-ribbon">20 ج.م</div>
                 <div class="img-container"><img src="https://i.ibb.co/gLhXv0JN/1782078258089.png"></div>
                 <div class="p-name">سلسلة الخرز الكبير بصليب</div>
@@ -314,7 +282,6 @@
             let hasProducts = false;
 
             for (let i = 0; i < cards.length; i++) {
-                // تعديل مضاف: فحص عناصر الوصف القصير وإخفائها لو كانت فارغة للمنتج الحالي
                 let descEl = cards[i].querySelector('.p-short-desc');
                 if (descEl) {
                     let text = descEl.innerText.trim();
@@ -359,13 +326,20 @@
             btn.classList.toggle("open");
             if(logo) logo.classList.toggle("rotate");
             overlay.classList.toggle("show");
-            sidebar.style.width = sidebar.style.width === "50vw" ? "0" : "50vw";
+            
+            if (sidebar.style.width === "50vw") {
+                sidebar.style.width = "0";
+                document.body.classList.remove("menu-open");
+            } else {
+                sidebar.style.width = "50vw";
+                document.body.classList.add("menu-open");
+            }
         }
 
         function toggleDropdown() {
             var btn = document.getElementById("dropBtn");
             var dropdown = document.getElementById("categoriesDropdown");
-            
+
             btn.classList.toggle("active");
             if (dropdown.style.maxHeight) {
                 dropdown.style.maxHeight = null;
@@ -378,25 +352,34 @@
             var sidebar = document.getElementById("sideMenu");
             var btn = document.getElementById("menuBtn");
             var overlay = document.getElementById("menuOverlay");
-            
+
             if (sidebar && sidebar.style.width === "50vw") {
                 sidebar.style.width = "0";
+                document.body.classList.remove("menu-open");
                 if(btn) btn.classList.remove("open");
                 if(overlay) overlay.classList.remove("show");
             }
-            
+
             var wrapper = document.getElementById("pageWrapper");
             if(wrapper) {
                 wrapper.style.opacity = "0";
                 wrapper.style.transform = "translateY(-12px)";
             }
-            
+
             setTimeout(function() { window.location.href = url; }, 250);
         }
 
         window.addEventListener('pageshow', function(event) {
+            document.body.classList.remove("menu-open");
+            var sidebar = document.getElementById("sideMenu");
+            if(sidebar) sidebar.style.width = "0";
+            var btn = document.getElementById("menuBtn");
+            if(btn) btn.classList.remove("open");
+            var overlay = document.getElementById("menuOverlay");
+            if(overlay) overlay.classList.remove("show");
+
             filterCategory();
-            
+
             var wrapper = document.getElementById("pageWrapper");
             if (wrapper) {
                 wrapper.style.opacity = "";
@@ -405,7 +388,7 @@
                     wrapper.classList.add("page-ready");
                 }, 10);
             }
-            
+
             let cart = JSON.parse(localStorage.getItem('cart')) || [];
             const count = document.querySelector(".cart-count");
             if(count) count.innerText = cart.length;
