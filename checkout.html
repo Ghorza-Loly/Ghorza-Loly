@@ -28,7 +28,7 @@
             height: 70px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
+
         .back-link { 
             text-decoration: none; 
             color: #ffffff; 
@@ -46,14 +46,14 @@
         }
         .back-link:hover { transform: scale(1.1); filter: drop-shadow(0 0 12px rgba(255, 255, 255, 1)); }
         .back-link:active { transform: scale(0.92); box-shadow: 0 0 20px #ffffff; background: rgba(255, 255, 255, 0.2); }
-        
+
         .page-header-title { color: #ffffff; font-size: 21px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
         .checkout-container { max-width: 550px; margin: 20px auto; padding: 0 15px; }
 
         .progress-bar { display: flex; justify-content: space-between; margin-bottom: 25px; background: #fff; padding: 12px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid rgba(13, 27, 42, 0.05); }
         .step-dot { width: 35px; height: 35px; border-radius: 50%; background: #eddcd2; color: var(--navy); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px; transition: var(--transition-smooth); pointer-events: none; }
         .step-dot.active { background: var(--navy); color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(13,27,42,0.2); }
-        
+
         .step-card { background: #ffffff; border-radius: 24px; padding: 25px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); display: none; border: 1px solid rgba(13, 27, 42, 0.05); transition: transform 0.3s var(--transition-smooth); }
         .step-card.active { display: block; animation: slideIn 0.4s var(--transition-smooth) forwards; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
@@ -99,7 +99,7 @@
 
         .nav-btns { display: flex; gap: 8px; flex: 1; justify-content: flex-end; }
         .btn { padding: 12px 20px; border-radius: 14px; border: none; font-weight: bold; font-size: 14px; cursor: pointer; }
-        
+
         .btn-next { background: var(--cashmere); color: white; }
         .btn-next:disabled { background: #4b5563 !important; color: #9ca3af !important; cursor: not-allowed; opacity: 0.6; }
         .btn-prev { background: #343a40; color: white; }
@@ -180,6 +180,7 @@
         let totalSteps = 3; 
         let selectedPayment = "";
 
+        // دالة الفحص الذكي لروابط خرائط جوجل (Google Maps Valid Link Filter)
         function isValidGoogleMapsUrl(url) {
             const val = url.trim().toLowerCase();
             return (
@@ -213,14 +214,16 @@
         function validateCurrentStepInputs() {
             const nextBtn = document.getElementById('nextBtn');
             const submitBtn = document.getElementById('submitBtn');
-            
+
             if (currentStep === 1) {
                 const custName = document.getElementById('custName').value.trim();
                 const custPhone = document.getElementById('custPhone').value.trim();
                 const nameWords = custName.split(/\s+/).filter(word => word.length > 0);
+
                 nextBtn.disabled = !(nameWords.length >= 3 && custPhone.length === 11);
             } else if (currentStep === 2) {
                 const locUrl = document.getElementById('custLocationUrl').value;
+                // تفعيل زر التالي فقط إذا كان رابط خرائط جوجل صحيحاً
                 nextBtn.disabled = !isValidGoogleMapsUrl(locUrl);
             } else if (currentStep === 3) {
                 if (selectedPayment !== "") {
@@ -250,7 +253,7 @@
                 if (method === 'فودافون كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة فودافون كاش: 01061576259";
                 else if (method === 'أورانج كاش') document.getElementById('paymentDetailsNote').innerText = "رقم محفظة أورانج كاش: 01274779615";
                 else document.getElementById('paymentDetailsNote').innerText = "رقم حساب فوري للتحويل: 01212638078";
-                
+
                 nextBtn.style.display = 'inline-block';
                 submitBtn.style.display = 'none';
             } else {
@@ -313,15 +316,15 @@
             const locationUrl = document.getElementById('custLocationUrl').value.trim();
             const notes = document.getElementById('custAddress').value.trim() || "لا توجد تفاصيل إضافية";
             const totalPrice = document.getElementById('finalPriceDisplay').innerText;
-            
+
             let productsDetails = "";
             let cartData = JSON.parse(localStorage.getItem('cart')) || [];
-            
+
             if (cartData.length > 0) {
                 let groupedCart = {};
-                
+
                 cartData.forEach(item => {
-                    let uniqueKey = item.name + (item.details || '');
+                    let uniqueKey = (item.name || '').trim() + (item.details || '').trim();
                     if (groupedCart[uniqueKey]) {
                         groupedCart[uniqueKey].qty += 1;
                     } else {
@@ -329,57 +332,47 @@
                     }
                 });
 
-                let counter = 1;
                 for (let key in groupedCart) {
                     let item = groupedCart[key];
-                    let pName = item.name || "منتج";
+                    let pName = (item.name || "منتج").trim();
                     let pQty = item.qty;
-                    let pDetails = (item.details && item.details !== "null" && item.details !== "undefined") ? item.details : "";
-                    
-                    productsDetails += `${counter}- 📦 *${pName}*\n`;
-                    if (pDetails) {
-                        productsDetails += `   🎨 اللون/التفاصيل: ${pDetails}\n`;
-                    }
-                    productsDetails += `   🔢 العدد: ${pQty}\n`;
-                    productsDetails += `   ---------------------------\n`;
-                    counter++;
+                    let pDetails = (item.details && item.details !== "null" && item.details !== "undefined") ? item.details.trim() : "";
+
+                    let colorText = pDetails ? ` (${pDetails})` : "";
+                    productsDetails += `• *${pName}*${colorText} ×${pQty}\n`;
                 }
             } else {
-                productsDetails = "⚠️ لم يتم العثور على منتجات في السلة.\n";
+                productsDetails = "⚠️ لا توجد منتجات بالسلة.\n";
             }
 
-            let message = `🛒 *طلب جديد من متجر Ghorza & Loly* 🛒\n\n`;
-            message += `*--- [بيانات العميل] ---*\n`;
-            message += `👤 *الاسم:* ${name}\n`;
-            message += `📞 *رقم الهاتف:* ${phoneField}\n\n`;
-            
-            message += `*--- [تفاصيل المنتجات المطلوبة] ---*\n`;
-            message += `${productsDetails}\n`;
-            
-            message += `*--- [الدفع والتوصيل] ---*\n`;
-            message += `💳 *طريقة الدفع:* ${selectedPayment}\n`;
-            message += `💰 *إجمالي السلة:* ${totalPrice}\n\n`;
-            message += `📍 *رابط خرائط جوجل (اللوكيشن):*\n${locationUrl}\n\n`;
-            message += `📝 *ملاحظات العنوان:* ${notes}\n\n`;
-            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد الديلفري يدويًا._`;
+            let message = `🛍️ *طلب جديد | Ghorza & Loly* 🛍️\n\n`;
+            message += `👤 *العميل:* ${name}\n`;
+            message += `📞 *الهاتف:* ${phoneField}\n`;
+            message += `💳 *الدفع:* ${selectedPayment}\n`;
+            message += `💰 *الإجمالي:* ${totalPrice}\n\n`;
 
-            const whatsappPhone = "201061576259";
+            message += `📦 *المنتجات المطلوبة:*\n${productsDetails}\n`;
+
+            message += `📍 *اللوكيشن:* ${locationUrl}\n`;
+            message += `📝 *ملاحظات:* ${notes}\n\n`;
+            message += `_ملاحظة: سيتم مراجعة رابط الموقع وتحديد تكلفة الديلفري يدويًا._`;
+
+            const whatsappPhone = "201285544167";
             const url = `https://api.whatsapp.com/send?phone=${whatsappPhone}&text=${encodeURIComponent(message)}`;
 
-            // تفريغ السلة تماماً وبشكل نهائي لمنع تكرار الطلب
+            localStorage.setItem('checkout_success_flag', 'true');
+
             localStorage.removeItem('cartItems');
             localStorage.removeItem('cart');
             localStorage.removeItem('products');
             localStorage.removeItem('cartTotalPrice');
             localStorage.removeItem('cartWhatsAppDetails');
 
-            // 1. فتح الواتساب في نافذة جديدة لإرسال الرسالة للتاجر
             window.open(url, '_blank');
 
-            // 2. تحويل العميل بسلاسة لصفحة النجاح المستقلة (success.html)
             setTimeout(() => {
-                window.location.replace("success.html");
-            }, 400);
+                window.location.replace("cart.html");
+            }, 300);
         });
 
         document.addEventListener("DOMContentLoaded", () => {
