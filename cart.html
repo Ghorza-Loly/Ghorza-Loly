@@ -91,25 +91,6 @@
 
         .next-btn { background: var(--cashmere); color: white; border: none; padding: 12px 25px; border-radius: 14px; cursor: pointer; font-weight: bold; font-size: 15px; transition: all 0.2s ease; }
         .next-btn:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
-        
-        /* تصميم رسالة نجاح تسليم الطلب الدائرية الجديدة */
-        .success-banner {
-            background: #e6fdf2;
-            color: #10b981;
-            padding: 22px;
-            border-radius: 20px;
-            border: 2px solid #a7f3d0;
-            text-align: center;
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.08);
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        @keyframes popIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
     </style>
 </head>
 <body>
@@ -155,8 +136,6 @@
         </div>
 
         <div class="cart-container">
-            <div id="successMessagePlaceholder"></div>
-
             <div class="cart-card" id="activeCartSection">
                 <h3>📝 تفاصيل المنتجات</h3>
                 <div id="cartDisplay"></div>
@@ -202,29 +181,7 @@
             triggerPageExit(`products.html?type=${encodeURIComponent(categoryName)}`);
         }
 
-        // فحص وإظهار رسالة النجاح بعد الرجوع من صفحة الدفع مباشرة
-        function checkCheckoutStatusMessage() {
-            const placeholder = document.getElementById('successMessagePlaceholder');
-            if (localStorage.getItem('checkout_success_flag') === 'true') {
-                placeholder.innerHTML = `
-                    <div class="success-banner">
-                        🎉 تم تسليم الطلب بنجاح! <br>
-                        <span style="font-size: 13px; display: inline-block; margin-top: 6px; color: #047857; font-weight: 500;">
-                            تم إرسال تفاصيل طلبك وجاري المراجعة، وسيتم الوصول خلال أيام. شكرًا لثقتك بنا ❤️
-                        </span>
-                    </div>
-                `;
-                // مسح الفلاج فوراً عشان الرسالة متفضلش ثابتة لو قفل الصفحة وفتحها تاني
-                localStorage.removeItem('checkout_success_flag');
-            } else {
-                placeholder.innerHTML = '';
-            }
-        }
-
         function loadCartView() {
-            // التحقق من رسالة النجاح
-            checkCheckoutStatusMessage();
-
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const display = document.getElementById('cartDisplay');
             const checkoutBtn = document.getElementById('checkoutBtn');
