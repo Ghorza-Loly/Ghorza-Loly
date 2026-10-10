@@ -16,6 +16,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--black); padding-bottom: 140px; overflow-x: hidden; }
 
+        /* قفل سكرول الصفحة الخلفية تماماً لما القائمة تفتح */
         body.menu-open {
             overflow: hidden;
             height: 100vh;
@@ -43,12 +44,12 @@
             height: 70px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
+        
         .right-header-side { display: flex; align-items: center; gap: 12px; }
 
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; padding: 8px 5px; z-index: 2100; transition: transform 0.3s var(--transition-smooth); }
         .menu-btn span { display: block; width: 22px; height: 3px; background-color: #ffffff; border-radius: 2px; transition: all 0.3s var(--transition-smooth); }
-
+        
         .menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
         .menu-btn.open span:nth-child(2) { opacity: 0; transform: translateX(-10px); }
         .menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
@@ -56,7 +57,7 @@
 
         .logo-img { width: 52px; height: 52px; border-radius: 50%; border: 2px solid #ffffff; object-fit: cover; transition: transform 0.6s var(--transition-smooth); }
         .logo-img.rotate { transform: rotate(360deg); }
-
+        
         .page-header-title { color: #ffffff; font-size: 19px; font-weight: bold; position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; white-space: nowrap; }
 
         .cart-link { text-decoration: none; border: 2px solid #ffffff; width: 72px; height: 36px; border-radius: 20px; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); box-shadow: 0 0 14px #ffffff; padding: 0 8px; transition: all 0.3s var(--transition-smooth); pointer-events: none; }
@@ -68,7 +69,7 @@
 
         .dropdown-btn { display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; }
         .arrow-icon { font-size: 12px; color: #ffffff; transition: transform 0.3s var(--transition-smooth), color 0.3s ease; display: inline-block; }
-
+        
         .dropdown-btn.active { color: var(--cashmere) !important; background: rgba(255, 255, 255, 0.02); }
         .dropdown-btn.active .arrow-icon { transform: rotate(180deg); color: var(--cashmere) !important; }
 
@@ -132,31 +133,12 @@
                 </a>
             </div>
             <div class="page-header-title">فاتورة الطلب 🛒</div>
-
+            
             <a href="javascript:void(0)" class="cart-link">
                 <span class="cart-count">0</span>
                 <span class="cart-icon">🛒</span>
             </a>
         </header>
-
-        <div id="menuOverlay" class="menu-overlay" onclick="toggleNav()"></div>
-
-        <div id="sideMenu" class="side-menu">
-            <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
-            <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
-            <button class="dropdown-btn" id="dropBtn" onclick="toggleDropdown()">
-                <span>المنتجات</span>
-                <span class="arrow-icon" id="arrowIcon">▼</span>
-            </button>
-            <div class="dropdown-container-content" id="categoriesDropdown">
-                <a href="javascript:void(0)" onclick="goToCategory('حظاظات')">حظاظات</a>
-                <a href="javascript:void(0)" onclick="goToCategory('سلاسل')">سلاسل</a>
-                <a href="javascript:void(0)" onclick="goToCategory('كوسترات')">كوسترات</a>
-                <a href="javascript:void(0)" onclick="goToCategory('بوسترات')">بوسترات</a>
-                <a href="javascript:void(0)" onclick="goToCategory('ميداليات')">ميداليات</a>
-            </div>
-            <a href="javascript:void(0)" onclick="triggerPageExit('contact.html')">للتواصل معنا</a>
-        </div>
 
         <div class="cart-container">
             <div id="successMessagePlaceholder"></div>
@@ -169,6 +151,26 @@
 
     </div>
 
+    <!-- القائمة الجانبية والـ Overlay تم نقلهم هنا للخارج لتظهر فوق الشريط السفلي الكحلي -->
+    <div id="menuOverlay" class="menu-overlay" onclick="toggleNav()"></div>
+    
+    <div id="sideMenu" class="side-menu">
+        <a href="javascript:void(0)" onclick="triggerPageExit('index.html')">الرئيسية</a>
+        <a href="javascript:void(0)" onclick="triggerPageExit('search.html')">البحث</a>
+        <button class="dropdown-btn" id="dropBtn" onclick="toggleDropdown()">
+            <span>المنتجات</span>
+            <span class="arrow-icon" id="arrowIcon">▼</span>
+        </button>
+        <div class="dropdown-container-content" id="categoriesDropdown">
+            <a href="javascript:void(0)" onclick="goToCategory('حظاظات')">حظاظات</a>
+            <a href="javascript:void(0)" onclick="goToCategory('سلاسل')">سلاسل</a>
+            <a href="javascript:void(0)" onclick="goToCategory('كوسترات')">كوسترات</a>
+            <a href="javascript:void(0)" onclick="goToCategory('بوسترات')">بوسترات</a>
+            <a href="javascript:void(0)" onclick="goToCategory('ميداليات')">ميداليات</a>
+        </div>
+        <a href="javascript:void(0)" onclick="triggerPageExit('contact.html')">للتواصل معنا</a>
+    </div>
+
     <div class="action-bar">
         <div class="price-info">
             <span style="font-size:12px; color:#ccc;">إجمالي السلة:</span>
@@ -176,7 +178,7 @@
         </div>
         <button id="checkoutBtn" class="next-btn" onclick="goToCheckout()">إتمام الطلب ←</button>
     </div>
-
+    
     <script>
         let itemsTotal = 0;
 
@@ -236,11 +238,11 @@
             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             const display = document.getElementById('cartDisplay');
             const checkoutBtn = document.getElementById('checkoutBtn');
-
+            
             if(document.querySelector(".cart-count")) {
                 document.querySelector(".cart-count").innerText = cart.length;
             }
-
+            
             if (cart.length === 0) {
                 display.innerHTML = '<p style="text-align:center; padding:30px; color:#666; font-size:15px;">لا توجد منتجات جديدة في السلة 🤷‍♂️</p>';
                 checkoutBtn.disabled = true;
@@ -248,7 +250,7 @@
                 localStorage.setItem('cartTotalPrice', 0); 
             } else {
                 checkoutBtn.disabled = false;
-
+                
                 let groupedCart = {};
                 cart.forEach((item, index) => {
                     let uniqueKey = item.name + (item.details || '');
@@ -305,7 +307,7 @@
             var sidebar = document.getElementById("sideMenu");
             var btn = document.getElementById("menuBtn");
             var overlay = document.getElementById("menuOverlay");
-
+            
             if (sidebar && sidebar.style.width === "50vw") {
                 sidebar.style.width = "0";
                 document.body.classList.remove("menu-open");
